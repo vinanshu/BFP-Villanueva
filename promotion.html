@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Promotion - Bureau of Fire Protection</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+    }
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 30px;
+      background-color: #fff;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #FFE4B5;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .qualified {
+      color: green;
+      font-weight: bold;
+    }
+
+    .not-qualified {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="#" class="active">🎖️ Promotion</a>
+    <a href="/recruitment.html">🧑‍🎓 Recruitment</a>
+    <a href="/trainings.html">🏋️ Trainings</a>
+    <a href="/placement.html">📌 Placement</a>
+    <a href="/index.html">🔓 Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Promotion Status</h1>
+    <table id="promotion-table">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Rank</th>
+          <th>Years in Present Rank</th>
+          <th>Exactly Date Hired</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Table rows inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function calculateYears(dateHired) {
+      const today = new Date();
+      const hiredDate = new Date(dateHired);
+      const diff = today - hiredDate;
+      return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25)); // Approximate year diff
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    function loadPromotionTable() {
+      const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
+      const tbody = document.querySelector("#promotion-table tbody");
+      tbody.innerHTML = "";
+
+      personnel.forEach(person => {
+        const years = calculateYears(person.dateHired);
+        const qualified = years >= 3;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${person.fullName}</td>
+          <td>${person.rank || "N/A"}</td>
+          <td>${years}</td>
+          <td>${formatDate(person.dateHired)}</td>
+          <td class="${qualified ? 'qualified' : 'not-qualified'}">
+            ${qualified ? "✅ Qualified" : "❌ Not Qualified"}
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    window.onload = loadPromotionTable;
+  </script>
+
+</body>
+</html>

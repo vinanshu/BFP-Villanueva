@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Training Management</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 30px;
+      background-color: #fff;
+      min-height: 100vh;
+      color: #000;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    h1,
+    h2 {
+      color: #333;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      max-width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input[readonly] {
+      background-color: #f0f0f0;
+    }
+
+    button {
+      margin-top: 20px;
+      background-color: #FFA500;
+      color: #000;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #e69500;
+    }
+
+    .success {
+      margin-top: 15px;
+      color: green;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #FFF8E1;
+      color: #444;
+    }
+
+    tr:hover {
+      background-color: #FFF3D9;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="sidebar">
+    <h2>👨‍🚒 Admin</h2>
+
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="/promotion.html">🎖️ Promotion</a>
+    <a href="/recruitment.html">🧑‍🎓 Recruitment</a>
+    <a href="#" class="active">🏋️ Trainings</a>
+    <a href="/placement.html">📌 Placement</a>
+    <a href="/index.html">🔓 Logout</a>
+
+  </div>
+
+
+  <div class="main-content">
+    <h1>Training Management</h1>
+
+    <form id="trainingForm">
+      <label for="fullName">Full Name</label>
+      <select id="fullName" required>
+        <option value="">-- Select Full Name --</option>
+      </select>
+
+      <label for="rank">Rank</label>
+      <input type="text" id="rank" readonly>
+
+      <label for="dateOfTraining">Date of Training</label>
+      <input type="date" id="dateOfTraining" required>
+
+      <label for="hours">Number of Hours</label>
+      <input type="number" id="hours" min="1" required>
+
+      <button type="submit">Create</button>
+      <div class="success" id="successMsg" style="display: none;">Training record saved!</div>
+    </form>
+
+    <h2>Training Records</h2>
+    <table id="trainingTable">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Rank</th>
+          <th>Date of Training</th>
+          <th>No. of Hours</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Records will be populated here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const fullNameSelect = document.getElementById('fullName');
+    const rankInput = document.getElementById('rank');
+    const trainingTableBody = document.querySelector('#trainingTable tbody');
+
+    function loadPersonnel() {
+      const personnel = JSON.parse(localStorage.getItem('personnelList')) || [];
+      fullNameSelect.innerHTML = '<option value="">-- Select Full Name --</option>';
+      personnel.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.fullName;
+        option.textContent = p.fullName;
+        fullNameSelect.appendChild(option);
+      });
+    }
+
+    fullNameSelect.addEventListener('change', function () {
+      const selectedName = this.value;
+      const personnel = JSON.parse(localStorage.getItem('personnelList')) || [];
+      const person = personnel.find(p => p.fullName === selectedName);
+      rankInput.value = person ? person.rank : '';
+    });
+
+    function saveTrainingRecord(record) {
+      const records = JSON.parse(localStorage.getItem('trainings')) || [];
+      records.push(record);
+      localStorage.setItem('trainings', JSON.stringify(records));
+    }
+
+    function loadTrainingTable() {
+      const records = JSON.parse(localStorage.getItem('trainings')) || [];
+      trainingTableBody.innerHTML = '';
+      records.forEach(r => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${r.fullName}</td>
+          <td>${r.rank}</td>
+          <td>${r.dateOfTraining}</td>
+          <td>${r.hours}</td>
+        `;
+        trainingTableBody.appendChild(row);
+      });
+    }
+
+    document.getElementById('trainingForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const fullName = document.getElementById('fullName').value;
+      const rank = rankInput.value;
+      const dateOfTraining = document.getElementById('dateOfTraining').value;
+      const hours = parseInt(document.getElementById('hours').value);
+
+      if (!fullName || !rank || !dateOfTraining || isNaN(hours)) {
+        alert("Please fill in all required fields correctly.");
+        return;
+      }
+
+      const record = { fullName, rank, dateOfTraining, hours };
+      saveTrainingRecord(record);
+      loadTrainingTable();
+
+      // Reset the form
+      this.reset();
+      rankInput.value = '';
+      document.getElementById('successMsg').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('successMsg').style.display = 'none';
+      }, 3000);
+    });
+
+    loadPersonnel();
+    loadTrainingTable();
+  </script>
+
+</body>
+
+</html>

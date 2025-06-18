@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recruitment - Bureau of Fire Protection</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 30px;
+      background-color: #fff;
+      min-height: 100vh;
+      color: #000;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #FFF8E1;
+      color: #444;
+    }
+
+    tr:hover {
+      background-color: #FFF3D9;
+    }
+
+    .photo-thumb {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #FFA500;
+      color: #000;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #FFB733;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="/promotion.html">🎖️ Promotion</a>
+    <a href="#" class="active">🧑‍🎓 Recruitment</a>
+    <a href="/trainings.html">🏋️ Trainings</a>
+    <a href="/placement.html">📌 Placement</a>
+    <a href="/index.html">🔓 Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Recruitment List</h1>
+    <table id="recruitment-table">
+      <thead>
+        <tr>
+          <th>ID Number</th>
+          <th>Full Name</th>
+          <th>Rank</th>
+          <th>Designation</th>
+          <th>Station</th>
+          <th>Birth Date</th>
+          <th>Date Hired</th>
+          <th>Username</th>
+          <th>Password</th>
+          <th>Photo</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic content will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function loadRecruitmentData() {
+      const tableBody = document.querySelector("#recruitment-table tbody");
+      tableBody.innerHTML = "";
+
+      const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
+
+      personnelList.forEach((person, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${person.idNumber}</td>
+          <td>${person.fullName}</td>
+          <td>${person.rank}</td>
+          <td>${person.designation}</td>
+          <td>${person.station}</td>
+          <td>${person.birthDate}</td>
+          <td>${person.dateHired}</td>
+          <td>${person.username}</td>
+          <td>${person.password}</td>
+          <td>${person.photo ? `<img src="${person.photo}" class="photo-thumb" alt="Photo" />` : ''}</td>
+          <td><button onclick="viewPersonnel(${index})">View</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function viewPersonnel(index) {
+      const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
+      const person = personnelList[index];
+      alert(`Personnel Details:\nName: ${person.fullName}\nUsername: ${person.username}\nStation: ${person.station}`);
+    }
+
+    window.onload = loadRecruitmentData;
+  </script>
+
+</body>
+</html>

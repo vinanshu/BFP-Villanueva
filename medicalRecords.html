@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Medical Records</title>
+  <style>
+    body { font-family: 'Segoe UI'; margin: 0; background: #f5f5f5; }
+    .sidebar { width: 220px; position: fixed; top: 0; bottom: 0; background: #000; color: #FFD700; padding: 20px; }
+    .sidebar h2 { font-size: 24px; color: #FFA500; border-bottom: 2px solid #FFA500; padding-bottom: 10px; }
+    .sidebar a { display: block; color: #FFD700; text-decoration: none; margin: 10px 0; padding: 8px 12px; border-radius: 5px; }
+    .sidebar a.active, .sidebar a:hover { background: #FFA500; color: #000; }
+    .main-content { margin-left: 240px; padding: 30px; }
+    h1 { font-size: 28px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; }
+    .form-group input { width: 100%; padding: 8px; }
+    button { padding: 10px 20px; background: #FFA500; border: none; color: #000; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="/medicalRecords.html" class="active">🩺 Medical Records</a>
+    <a href="/awardsCommendations.html">🏅 Awards & Commendations</a>
+    <a href="/index.html">🚪 Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Medical Records</h1>
+
+    <div class="form-group">
+      <label>Employee Name:</label>
+      <input type="text" id="employeeName" />
+    </div>
+    <div class="form-group">
+      <label>Medical Details:</label>
+      <input type="text" id="medicalDetails" />
+    </div>
+    <button id="saveBtn" onclick="saveRecord()">Add Record</button>
+    <button id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">Cancel Edit</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Employee Name</th>
+          <th>Medical Details</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="recordsTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    let editIndex = -1; // -1 means add new
+
+    function loadRecords() {
+      const records = JSON.parse(localStorage.getItem('medicalRecords')) || [];
+      const tbody = document.getElementById('recordsTable');
+      tbody.innerHTML = '';
+      records.forEach((record, index) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${record.employeeName}</td>
+            <td>${record.medicalDetails}</td>
+            <td>
+              <button onclick="startEdit(${index})">Edit</button>
+              <button onclick="deleteRecord(${index})">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function saveRecord() {
+      const name = document.getElementById('employeeName').value.trim();
+      const details = document.getElementById('medicalDetails').value.trim();
+      if (!name || !details) return alert('Please enter all fields!');
+
+      const records = JSON.parse(localStorage.getItem('medicalRecords')) || [];
+
+      if (editIndex === -1) {
+        // Add new record
+        records.push({ employeeName: name, medicalDetails: details });
+      } else {
+        // Update existing record
+        records[editIndex] = { employeeName: name, medicalDetails: details };
+        editIndex = -1;
+        document.getElementById('saveBtn').textContent = 'Add Record';
+        document.getElementById('cancelEditBtn').style.display = 'none';
+      }
+
+      localStorage.setItem('medicalRecords', JSON.stringify(records));
+      loadRecords();
+      document.getElementById('employeeName').value = '';
+      document.getElementById('medicalDetails').value = '';
+    }
+
+    function startEdit(index) {
+      const records = JSON.parse(localStorage.getItem('medicalRecords')) || [];
+      const record = records[index];
+      document.getElementById('employeeName').value = record.employeeName;
+      document.getElementById('medicalDetails').value = record.medicalDetails;
+      editIndex = index;
+      document.getElementById('saveBtn').textContent = 'Update Record';
+      document.getElementById('cancelEditBtn').style.display = 'inline-block';
+    }
+
+    function cancelEdit() {
+      editIndex = -1;
+      document.getElementById('employeeName').value = '';
+      document.getElementById('medicalDetails').value = '';
+      document.getElementById('saveBtn').textContent = 'Add Record';
+      document.getElementById('cancelEditBtn').style.display = 'none';
+    }
+
+    function deleteRecord(index) {
+      const records = JSON.parse(localStorage.getItem('medicalRecords')) || [];
+      records.splice(index, 1);
+      localStorage.setItem('medicalRecords', JSON.stringify(records));
+      loadRecords();
+      cancelEdit(); // Reset form if needed
+    }
+
+    loadRecords();
+  </script>
+</body>
+</html>

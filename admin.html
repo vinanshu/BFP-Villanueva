@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin Dashboard</title>
   <style>
     body {
@@ -51,31 +51,36 @@
       background-color: #f5f5f5;
     }
 
-    .header {
-      margin-bottom: 30px;
-    }
-
     .header h1 {
       color: #000;
-      margin: 0;
       font-size: 32px;
+      margin-bottom: 10px;
     }
 
-    .header p {
-      color: #444;
-      margin-top: 5px;
-    }
-
-    .summary-cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+    .card-group {
       margin-bottom: 40px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .summary-cards .card {
-      flex: 1;
-      min-width: 220px;
+    .group-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #FFA500;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 5px;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
       background-color: #fff;
       border-left: 6px solid #FFA500;
       padding: 20px;
@@ -84,103 +89,41 @@
       transition: transform 0.2s;
     }
 
-    .summary-cards .card:hover {
+    .card:hover {
       transform: scale(1.02);
     }
 
-    .summary-cards .card h3 {
+    .card h3 {
       margin: 0 0 10px;
       font-size: 18px;
       color: #000;
     }
 
-    .summary-cards .card span {
+    .card span {
       font-size: 2.5em;
       color: #FFA500;
       font-weight: bold;
     }
 
-    .table-container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    .table-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .table-header h2 {
-      margin: 0;
-      font-size: 20px;
-      color: #000;
-    }
-
-    .table-header a {
+    .card a.button-link {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
       text-decoration: none;
-      color: #FFA500;
-      font-weight: bold;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-
-    th {
-      background-color: #000;
-      color: #FFD700;
-    }
-
-    td {
-      background-color: #fff;
-      color: #333;
-    }
-
-    .actions button {
       background-color: #FFA500;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
       color: #000;
-      cursor: pointer;
+      border-radius: 6px;
       font-weight: bold;
-      transition: background-color 0.2s;
+      transition: background-color 0.3s;
     }
 
-    .actions button:hover {
+    .card a.button-link:hover {
       background-color: #e69500;
-    }
-
-    .pending {
-      color: orange;
-      font-weight: 600;
-    }
-
-    .approved {
-      color: green;
-      font-weight: 600;
-    }
-
-    .rejected {
-      color: red;
-      font-weight: 600;
     }
   </style>
 </head>
 <body>
-
   <div class="sidebar">
     <h2>Admin</h2>
     <a href="#" class="active">📊 Dashboard</a>
@@ -197,99 +140,113 @@
       <p>Welcome, Admin User</p>
     </div>
 
-    <div class="summary-cards">
-      <div class="card">
-        <h3>Pending Leave Requests</h3>
-        <span id="pendingLeaves">0</span>
-      </div>
-      <div class="card">
-        <h3>Equipment Due for Maintenance</h3>
-        <span id="maintenanceCount">0</span>
-      </div>
-      <div class="card">
-        <h3>Pending Clearances</h3>
-        <span id="pendingClearances">0</span>
+    <!-- 🎁 Personnel Records Group -->
+    <div class="card-group">
+      <div class="group-title">🎁 Personnel Records</div>
+      <div class="card-container">
+        <div class="card">
+          <h3>Personnel Details</h3>
+          <a href="/PersonnelRecords.html" class="button-link">View Details</a>
+        </div>
+        <div class="card">
+          <h3>📁 Personnel Profile (201 Files)</h3>
+          <span id="personnelRecords">0</span>
+        </div>
+        <div class="card">
+          <h3>📑 Leave Records</h3>
+          <span id="leaveRecords">0</span>
+        </div>
+        <div class="card">
+          <h3>📋 Clearance Records</h3>
+          <span id="clearanceRecords">0</span>
+        </div>
       </div>
     </div>
 
-    <div class="table-container">
-      <div class="table-header">
-        <h2>Recent Leave Requests</h2>
-        <a href="/leaveManagement.html">View All</a>
+    <!-- 🎁 Morale & Welfare Group -->
+    <div class="card-group">
+      <div class="group-title">🎁 Morale & Welfare</div>
+      <div class="card-container">
+        <div class="card">
+          <h3>Morale & Welfare Benefits</h3>
+          <a href="/moraleWelfare.html" class="button-link">View Benefits</a>
+        </div>
+        <div class="card">
+          <h3>🩺 Medical Records of Employees</h3>
+          <span id="medicalRecordsCount">0</span>
+        </div>
+        <div class="card">
+          <h3>🏅 Awards & Commendations</h3>
+          <span id="awardsCount">0</span>
+        </div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Employee</th>
-            <th>Leave Type</th>
-            <th>Dates</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="recentLeavesBody">
-          <!-- JS will populate -->
-        </tbody>
-      </table>
+    </div>
+
+    <!-- 👨‍💼 HR Management Group -->
+    <div class="card-group">
+      <div class="group-title">👨‍💼 Human Resource Management</div>
+      <div class="card-container">
+        <div class="card">
+          <h3>Manage HR</h3>
+          <a href="/humanResource.html" class="button-link">Go to HR</a>
+        </div>
+        <div class="card">
+          <h3>📈 Total Qualified for Promotion</h3>
+          <span id="qualifiedPromotions">0</span>
+        </div>
+        <div class="card">
+          <h3>👥 Total Recruited Personnel</h3>
+          <span id="recruitedCount">0</span>
+        </div>
+        <div class="card">
+          <h3>🎓 Total Trainings</h3>
+          <span id="trainingsCount">0</span>
+        </div>
+        <div class="card">
+          <h3>📍 Total Placement (≥ 2 Years)</h3>
+          <span id="placementCount">0</span>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const leaves = JSON.parse(localStorage.getItem('leaveRequests')) || [];
-      const pendingLeaves = leaves.filter(r => r.status === 'Pending').length;
-      document.getElementById('pendingLeaves').textContent = pendingLeaves;
+      const personnel = JSON.parse(localStorage.getItem('personnelList')) || [];
+      document.getElementById('personnelRecords').textContent = personnel.length;
+      document.getElementById('recruitedCount').textContent = personnel.length;
 
-      const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
-      const maintenanceCount = inventory.filter(item => item.status === 'Needs Maintenance').length;
-      document.getElementById('maintenanceCount').textContent = maintenanceCount;
-
-      const clearances = JSON.parse(localStorage.getItem('clearanceRequests')) || [];
-      const pendingClearances = clearances.filter(c => c.status === 'Pending').length;
-      document.getElementById('pendingClearances').textContent = pendingClearances;
-
-      const tbody = document.getElementById('recentLeavesBody');
-      tbody.innerHTML = '';
-      if (!leaves.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No leave requests found.</td></tr>';
-        return;
+      function calculateYears(dateHired) {
+        const today = new Date();
+        const hiredDate = new Date(dateHired);
+        const diff = today - hiredDate;
+        return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
       }
 
-      leaves
-        .sort((a, b) => new Date(b.dateOfFiling) - new Date(a.dateOfFiling))
-        .slice(0, 5)
-        .forEach(r => {
-          const sd = new Date(r.startDate), ed = new Date(r.endDate);
-          const opts = { month: 'long', day: 'numeric', year: 'numeric' };
-          const startStr = sd.toLocaleDateString('en-US', opts);
-          const endStr = ed.toLocaleDateString('en-US', opts);
-          const dates = (r.startDate === r.endDate) ? startStr : `${startStr}–${endStr}`;
-          const cls = r.status.toLowerCase();
+      const qualified = personnel.filter(p => calculateYears(p.dateHired) >= 3);
+      document.getElementById('qualifiedPromotions').textContent = qualified.length;
 
-          let actionBtn;
-          if (r.status === 'Pending') {
-            actionBtn = `<button onclick="location.href='/leaveManagement.html'">Manage</button>`;
-          } else {
-            actionBtn = `<button onclick="alert(
-              'Employee: ${r.employeeName}\\n' +
-              'Type: ${r.leaveType}\\n' +
-              'Dates: ${dates}\\n' +
-              'Status: ${r.status}'
-            )">View</button>`;
-          }
+      const placement = personnel.filter(p => calculateYears(p.dateHired) >= 2);
+      document.getElementById('placementCount').textContent = placement.length;
 
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${r.employeeName}</td>
-            <td>${r.leaveType}</td>
-            <td>${dates}</td>
-            <td class="${cls}">${r.status}</td>
-            <td class="actions">${actionBtn}</td>
-          `;
-          tbody.appendChild(tr);
-        });
+      const leaves = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+      document.getElementById('leaveRecords').textContent = leaves.length;
+
+      const clearances = JSON.parse(localStorage.getItem('clearanceRequests')) || [];
+      document.getElementById('clearanceRecords').textContent = clearances.length;
+
+      const medicalRecords = JSON.parse(localStorage.getItem('medicalRecords')) || [];
+      document.getElementById('medicalRecordsCount').textContent = medicalRecords.length;
+
+      const awards = JSON.parse(localStorage.getItem('awardsCommendations')) || [];
+      document.getElementById('awardsCount').textContent = awards.length;
+
+      const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+      document.getElementById('maintenanceCount').textContent = inventory.filter(item => item.status === 'Needs Maintenance').length;
+
+      const trainings = JSON.parse(localStorage.getItem('trainings')) || [];
+      document.getElementById('trainingsCount').textContent = trainings.length;
     });
   </script>
-
 </body>
 </html>
