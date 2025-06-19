@@ -46,39 +46,54 @@
 
     .main-content {
       margin-left: 240px;
-      padding: 30px;
-      min-height: 100vh;
+      padding: 40px 20px;
     }
 
-    .header h1 {
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
       color: #000;
-      font-size: 32px;
-      margin-bottom: 10px;
+      margin-bottom: 30px;
     }
 
-    .button-group {
-      margin-top: 40px;
+    .record-buttons {
       display: flex;
+      flex-direction: column;
       gap: 20px;
     }
 
-    .button-group a {
-      padding: 15px 25px;
-      font-size: 16px;
+    .record-buttons a {
       text-decoration: none;
       background-color: #FFA500;
       color: #000;
+      padding: 15px 20px;
       border-radius: 8px;
+      font-size: 18px;
       font-weight: bold;
+      text-align: center;
       transition: background-color 0.3s;
     }
 
-    .button-group a:hover {
+    .record-buttons a:hover {
       background-color: #e69500;
+    }
+
+    .record-buttons a span {
+      margin-right: 10px;
     }
   </style>
 </head>
 <body>
+
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>Admin</h2>
     <a href="/admin.html">📊 Dashboard</a>
@@ -90,16 +105,16 @@
     <a href="/index.html">🚪 Logout</a>
   </div>
 
+  <!-- Main Content -->
   <div class="main-content">
-    <div class="header">
-      <h1>Morale & Welfare Benefits</h1>
-      <p>Select a category to view or manage records:</p>
-    </div>
-
-    <div class="button-group">
-      <a href="/awardsCommendations.html">🏅 Awards & Commendations</a>
-      <a href="/medicalRecords.html">🏥 Medical Record</a>
+    <div class="container">
+      <h1>🎁 Morale & Welfare Benefits</h1>
+      <div class="record-buttons">
+        <a href="/awardsCommendations.html"><span>🏅</span>Awards & Commendations</a>
+        <a href="/medicalRecords.html"><span>🏥</span>Medical Record</a>
+      </div>
     </div>
   </div>
+
 </body>
 </html>

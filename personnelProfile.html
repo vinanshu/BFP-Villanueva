@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Personnel Profile</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 40px 20px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #000;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #FFA500;
+      color: #000;
+    }
+
+    img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+    }
+
+    input[type="text"], input[type="date"] {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .edit-btn {
+      background-color: #FFA500;
+      color: black;
+    }
+
+    .save-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .document-upload {
+      margin-top: 10px;
+    }
+
+    .document-list {
+      margin-top: 5px;
+      font-size: 0.9em;
+    }
+
+    .document-list div {
+      margin: 4px 0;
+    }
+
+    .remove-btn {
+      margin-left: 10px;
+      color: red;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .remove-btn:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="/personnelProfile.html">📝 Personnel Profile</a>
+    <a href="/leaveRecords.html">📦 Leave Records</a>
+    <a href="/ClearanceRecords.html">✅ Clearance Records</a>
+    <a href="/index.html">🚪 Logout</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>📁 Personnel Profile (201 Files)</h1>
+    <table id="personnelTable">
+      <thead>
+        <tr>
+          <th>Photo</th>
+          <th>Full Name</th>
+          <th>ID Number</th>
+          <th>Rank</th>
+          <th>Designation</th>
+          <th>Station</th>
+          <th>Birth Date</th>
+          <th>Date Hired</th>
+          <th>Retirement Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="personnelBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const personnelList = JSON.parse(localStorage.getItem('personnelList')) || [];
+
+    function renderTable() {
+      const tbody = document.getElementById('personnelBody');
+      tbody.innerHTML = '';
+
+      personnelList.forEach((p, index) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td><img src="${p.photo || 'https://via.placeholder.com/60'}" /></td>
+          <td><input type="text" value="${p.fullName}" data-field="fullName" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.idNumber}" data-field="idNumber" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.rank}" data-field="rank" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.designation}" data-field="designation" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.station}" data-field="station" data-index="${index}" disabled></td>
+          <td><input type="date" value="${p.birthDate}" data-field="birthDate" data-index="${index}" disabled></td>
+          <td><input type="date" value="${p.dateHired}" data-field="dateHired" data-index="${index}" disabled></td>
+          <td><input type="date" value="${p.retirementDate || ''}" data-field="retirementDate" data-index="${index}" disabled></td>
+          <td>
+            <button class="btn edit-btn" onclick="toggleEdit(${index}, this)">Edit</button><br>
+            <div class="document-upload">
+              <input type="file" onchange="uploadDocument(event, ${index})">
+              <div class="document-list" id="doc-list-${index}">
+                ${renderDocumentList(p.documents || [], index)}
+              </div>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function toggleEdit(index, btn) {
+      const inputs = document.querySelectorAll(`[data-index="${index}"]`);
+      const isDisabled = inputs[0].disabled;
+
+      inputs.forEach(input => input.disabled = !isDisabled);
+
+      if (isDisabled) {
+        btn.textContent = "Save";
+        btn.className = "btn save-btn";
+      } else {
+        btn.textContent = "Edit";
+        btn.className = "btn edit-btn";
+        saveProfile(index);
+      }
+    }
+
+    function saveProfile(index) {
+      const inputs = document.querySelectorAll(`[data-index="${index}"]`);
+      inputs.forEach(input => {
+        const field = input.getAttribute('data-field');
+        personnelList[index][field] = input.value;
+      });
+      localStorage.setItem('personnelList', JSON.stringify(personnelList));
+      alert("Profile updated.");
+    }
+
+    function uploadDocument(event, index) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const doc = {
+          name: file.name,
+          content: e.target.result
+        };
+        if (!personnelList[index].documents) {
+          personnelList[index].documents = [];
+        }
+        personnelList[index].documents.push(doc);
+        localStorage.setItem('personnelList', JSON.stringify(personnelList));
+        document.getElementById(`doc-list-${index}`).innerHTML = renderDocumentList(personnelList[index].documents, index);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderDocumentList(documents, index) {
+      if (!documents.length) return '<i>No documents uploaded</i>';
+      return documents.map((d, docIndex) => `
+        <div>
+          📎 <a href="${d.content}" download="${d.name}" target="_blank">${d.name}</a>
+          <button class="remove-btn" onclick="removeDocument(${index}, ${docIndex})">❌</button>
+        </div>
+      `).join('');
+    }
+
+    function removeDocument(personnelIndex, docIndex) {
+      if (confirm("Are you sure you want to remove this document?")) {
+        personnelList[personnelIndex].documents.splice(docIndex, 1);
+        localStorage.setItem('personnelList', JSON.stringify(personnelList));
+        document.getElementById(`doc-list-${personnelIndex}`).innerHTML = renderDocumentList(personnelList[personnelIndex].documents, personnelIndex);
+      }
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>

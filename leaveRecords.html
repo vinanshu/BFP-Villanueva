@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Leave Records</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 40px 20px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #000;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #FFA500;
+      color: #000;
+    }
+
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #6b7280;
+      font-style: italic;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="/personnelProfile.html">📝 Personnel Profile</a>
+    <a href="/leaveRecords.html" class="active">📦 Leave Records</a>
+    <a href="/ClearanceRecords.html">✅ Clearance Records</a>
+    <a href="/index.html">🚪 Logout</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>📅 Leave Records</h1>
+    <table id="leaveTable">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Rank</th>
+          <th>Date of Filing</th>
+          <th>Leave Type</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Number of Days</th>
+        </tr>
+      </thead>
+      <tbody id="leaveBody"></tbody>
+    </table>
+    <div class="no-data" id="noData" style="display:none;">No personnel or leave records found.</div>
+  </div>
+
+  <script>
+    const leaveBody = document.getElementById('leaveBody');
+    const noData = document.getElementById('noData');
+
+    const personnelList = JSON.parse(localStorage.getItem('personnelList')) || [];
+    const leaveRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+
+    if (personnelList.length === 0) {
+      noData.style.display = 'block';
+    } else {
+      personnelList.forEach(person => {
+        const requests = leaveRequests.filter(req => req.username === person.username);
+
+        if (requests.length > 0) {
+          requests.forEach(req => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${person.fullName}</td>
+              <td>${person.rank}</td>
+              <td>${req.dateOfFiling}</td>
+              <td>${req.leaveType}</td>
+              <td>${req.startDate}</td>
+              <td>${req.endDate}</td>
+              <td>${req.numDays}</td>
+            `;
+            leaveBody.appendChild(row);
+          });
+        } else {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${person.fullName}</td>
+            <td>${person.rank}</td>
+            <td colspan="5" style="text-align:center; color: #9ca3af;">No Leave Record</td>
+          `;
+          leaveBody.appendChild(row);
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
