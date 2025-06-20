@@ -88,6 +88,42 @@
       font-style: italic;
       padding: 20px;
     }
+
+    .status {
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .pending {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .approved {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .manage-btn {
+      background-color: #3b82f6;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .manage-btn:hover {
+      background-color: #2563eb;
+    }
   </style>
 </head>
 <body>
@@ -115,6 +151,8 @@
           <th>Start Date</th>
           <th>End Date</th>
           <th>Number of Days</th>
+          <th>Status</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody id="leaveBody"></tbody>
@@ -129,7 +167,7 @@
     const personnelList = JSON.parse(localStorage.getItem('personnelList')) || [];
     const leaveRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
 
-    if (personnelList.length === 0) {
+    if (personnelList.length === 0 || leaveRequests.length === 0) {
       noData.style.display = 'block';
     } else {
       personnelList.forEach(person => {
@@ -137,6 +175,15 @@
 
         if (requests.length > 0) {
           requests.forEach(req => {
+            const status = req.status || 'Pending';
+            const statusClass = {
+              pending: 'pending',
+              approved: 'approved',
+              rejected: 'rejected'
+            }[status.toLowerCase()] || 'pending';
+
+            const manageUrl = `leaveManagement.html?username=${encodeURIComponent(person.username)}&date=${encodeURIComponent(req.dateOfFiling)}`;
+
             const row = document.createElement('tr');
             row.innerHTML = `
               <td>${person.fullName}</td>
@@ -146,6 +193,8 @@
               <td>${req.startDate}</td>
               <td>${req.endDate}</td>
               <td>${req.numDays}</td>
+              <td><span class="status ${statusClass}">${status}</span></td>
+              <td><a href="${manageUrl}" class="manage-btn">Manage</a></td>
             `;
             leaveBody.appendChild(row);
           });
@@ -154,7 +203,7 @@
           row.innerHTML = `
             <td>${person.fullName}</td>
             <td>${person.rank}</td>
-            <td colspan="5" style="text-align:center; color: #9ca3af;">No Leave Record</td>
+            <td colspan="7" style="text-align:center; color: #9ca3af;">No Leave Record</td>
           `;
           leaveBody.appendChild(row);
         }

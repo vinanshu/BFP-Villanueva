@@ -11,12 +11,10 @@
     .sidebar a.active, .sidebar a:hover { background: #FFA500; color: #000; }
     .main-content { margin-left: 240px; padding: 30px; }
     h1 { font-size: 28px; }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 5px; }
-    .form-group input { width: 100%; padding: 8px; }
-    button { padding: 10px 20px; background: #FFA500; border: none; color: #000; border-radius: 5px; cursor: pointer; margin-right: 10px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; }
     th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background-color: #28a745; color: white; }
+    .no-records { margin-top: 20px; color: #555; text-align: center; }
   </style>
 </head>
 <body>
@@ -31,101 +29,52 @@
   <div class="main-content">
     <h1>Medical Records</h1>
 
-    <div class="form-group">
-      <label>Employee Name:</label>
-      <input type="text" id="employeeName" />
-    </div>
-    <div class="form-group">
-      <label>Medical Details:</label>
-      <input type="text" id="medicalDetails" />
-    </div>
-    <button id="saveBtn" onclick="saveRecord()">Add Record</button>
-    <button id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">Cancel Edit</button>
-
     <table>
       <thead>
         <tr>
           <th>Employee Name</th>
-          <th>Medical Details</th>
-          <th>Actions</th>
+          <th>Rank</th>
+          <th>Medical File</th>
         </tr>
       </thead>
-      <tbody id="recordsTable"></tbody>
+      <tbody id="medicalTable"></tbody>
     </table>
+
+    <div id="noMedicalMessage" class="no-records" style="display: none;">
+      No medical records found.
+    </div>
   </div>
 
   <script>
-    let editIndex = -1; // -1 means add new
+    document.addEventListener("DOMContentLoaded", function () {
+      const table = document.getElementById("medicalTable");
+      const noMessage = document.getElementById("noMedicalMessage");
+      const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
+      let found = false;
 
-    function loadRecords() {
-      const records = JSON.parse(localStorage.getItem('medicalRecords')) || [];
-      const tbody = document.getElementById('recordsTable');
-      tbody.innerHTML = '';
-      records.forEach((record, index) => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${record.employeeName}</td>
-            <td>${record.medicalDetails}</td>
-            <td>
-              <button onclick="startEdit(${index})">Edit</button>
-              <button onclick="deleteRecord(${index})">Delete</button>
-            </td>
-          </tr>
-        `;
+      personnelList.forEach(person => {
+        const fullName = person.fullName || 'Unknown';
+        const rank = person.rank || 'N/A';
+        const documents = Array.isArray(person.documents) ? person.documents : [];
+
+        documents.forEach(doc => {
+          if (doc.category === 'Medical Record' && doc.name) {
+            found = true;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${fullName}</td>
+              <td>${rank}</td>
+              <td><a href="${doc.content}" download="${doc.name}" target="_blank">${doc.name}</a></td>
+            `;
+            table.appendChild(row);
+          }
+        });
       });
-    }
 
-    function saveRecord() {
-      const name = document.getElementById('employeeName').value.trim();
-      const details = document.getElementById('medicalDetails').value.trim();
-      if (!name || !details) return alert('Please enter all fields!');
-
-      const records = JSON.parse(localStorage.getItem('medicalRecords')) || [];
-
-      if (editIndex === -1) {
-        // Add new record
-        records.push({ employeeName: name, medicalDetails: details });
-      } else {
-        // Update existing record
-        records[editIndex] = { employeeName: name, medicalDetails: details };
-        editIndex = -1;
-        document.getElementById('saveBtn').textContent = 'Add Record';
-        document.getElementById('cancelEditBtn').style.display = 'none';
+      if (!found) {
+        noMessage.style.display = "block";
       }
-
-      localStorage.setItem('medicalRecords', JSON.stringify(records));
-      loadRecords();
-      document.getElementById('employeeName').value = '';
-      document.getElementById('medicalDetails').value = '';
-    }
-
-    function startEdit(index) {
-      const records = JSON.parse(localStorage.getItem('medicalRecords')) || [];
-      const record = records[index];
-      document.getElementById('employeeName').value = record.employeeName;
-      document.getElementById('medicalDetails').value = record.medicalDetails;
-      editIndex = index;
-      document.getElementById('saveBtn').textContent = 'Update Record';
-      document.getElementById('cancelEditBtn').style.display = 'inline-block';
-    }
-
-    function cancelEdit() {
-      editIndex = -1;
-      document.getElementById('employeeName').value = '';
-      document.getElementById('medicalDetails').value = '';
-      document.getElementById('saveBtn').textContent = 'Add Record';
-      document.getElementById('cancelEditBtn').style.display = 'none';
-    }
-
-    function deleteRecord(index) {
-      const records = JSON.parse(localStorage.getItem('medicalRecords')) || [];
-      records.splice(index, 1);
-      localStorage.setItem('medicalRecords', JSON.stringify(records));
-      loadRecords();
-      cancelEdit(); // Reset form if needed
-    }
-
-    loadRecords();
+    });
   </script>
 </body>
 </html>

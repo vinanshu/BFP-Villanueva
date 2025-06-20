@@ -92,6 +92,20 @@
     .pending { background-color: #FFA500; }
     .completed { background-color: #FFD700; color: #000; }
     .rejected { background-color: #dc3545; }
+
+    .manage-btn {
+      background-color: #3b82f6;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .manage-btn:hover {
+      background-color: #2563eb;
+    }
   </style>
 </head>
 <body>
@@ -116,6 +130,7 @@
           <th>Rank</th>
           <th>Clearance Type</th>
           <th>Status</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody id="clearance-records-body">
@@ -135,12 +150,17 @@
         const personnel = personnelList.find(p => p.fullName === req.employee);
         const rank = personnel ? personnel.rank : 'N/A';
 
+        const statusClass = req.status ? req.status.toLowerCase() : 'pending';
+
+        const manageUrl = `clearanceSystem.html?employee=${encodeURIComponent(req.employee)}&type=${encodeURIComponent(req.type)}`;
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${req.employee}</td>
           <td>${rank}</td>
           <td>${req.type}</td>
-          <td><span class="status ${req.status.toLowerCase()}">${req.status}</span></td>
+          <td><span class="status ${statusClass}">${req.status}</span></td>
+          <td><a href="${manageUrl}" class="manage-btn">Manage</a></td>
         `;
         tbody.appendChild(tr);
       });

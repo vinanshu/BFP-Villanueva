@@ -1,3 +1,4 @@
+<!-- Replace the old personnelProfile.html with this full updated version -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,7 +87,7 @@
       border: 2px solid #ccc;
     }
 
-    input[type="text"], input[type="date"] {
+    input[type="text"], input[type="date"], select {
       width: 100%;
       padding: 5px;
       border: 1px solid #ccc;
@@ -108,6 +109,12 @@
 
     .save-btn {
       background-color: #4CAF50;
+      color: white;
+    }
+
+    .save-files-btn {
+      margin-top: 5px;
+      background-color: #007BFF;
       color: white;
     }
 
@@ -144,7 +151,7 @@
   <div class="sidebar">
     <h2>Admin</h2>
     <a href="/admin.html">📊 Dashboard</a>
-    <a href="/personnelProfile.html">📝 Personnel Profile</a>
+    <a href="/personnelProfile.html" class="active">📝 Personnel Profile</a>
     <a href="/leaveRecords.html">📦 Leave Records</a>
     <a href="/ClearanceRecords.html">✅ Clearance Records</a>
     <a href="/index.html">🚪 Logout</a>
@@ -174,6 +181,7 @@
 
   <script>
     const personnelList = JSON.parse(localStorage.getItem('personnelList')) || [];
+    const pendingUploads = {};
 
     function renderTable() {
       const tbody = document.getElementById('personnelBody');
@@ -195,7 +203,13 @@
           <td>
             <button class="btn edit-btn" onclick="toggleEdit(${index}, this)">Edit</button><br>
             <div class="document-upload">
-              <input type="file" onchange="uploadDocument(event, ${index})">
+              <select id="doc-category-${index}">
+                <option value="Medical Record">Medical Record</option>
+                <option value="Award/Commendation">Award/Commendation</option>
+                <option value="Others">Others</option>
+              </select>
+              <input type="file" multiple onchange="prepareUpload(event, ${index})" id="fileInput-${index}">
+              <button class="btn save-files-btn" onclick="saveUploadedFiles(${index})">Save Files</button>
               <div class="document-list" id="doc-list-${index}">
                 ${renderDocumentList(p.documents || [], index)}
               </div>
@@ -232,31 +246,59 @@
       alert("Profile updated.");
     }
 
-    function uploadDocument(event, index) {
-      const file = event.target.files[0];
-      if (!file) return;
+    function prepareUpload(event, index) {
+      const files = Array.from(event.target.files);
+      const category = document.getElementById(`doc-category-${index}`).value;
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const doc = {
-          name: file.name,
-          content: e.target.result
+      if (!pendingUploads[index]) pendingUploads[index] = [];
+      files.forEach(file => {
+        pendingUploads[index].push({ file, category });
+      });
+
+      alert(`${files.length} file(s) ready to be saved.`);
+    }
+
+    function saveUploadedFiles(index) {
+      const uploads = pendingUploads[index];
+      if (!uploads || uploads.length === 0) {
+        alert("No files to save.");
+        return;
+      }
+
+      const processNext = () => {
+        const item = uploads.shift();
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const doc = {
+            name: item.file.name,
+            content: e.target.result,
+            category: item.category
+          };
+          if (!personnelList[index].documents) {
+            personnelList[index].documents = [];
+          }
+          personnelList[index].documents.push(doc);
+          if (uploads.length > 0) {
+            processNext();
+          } else {
+            localStorage.setItem('personnelList', JSON.stringify(personnelList));
+            document.getElementById(`doc-list-${index}`).innerHTML = renderDocumentList(personnelList[index].documents, index);
+            alert("Files saved successfully.");
+          }
         };
-        if (!personnelList[index].documents) {
-          personnelList[index].documents = [];
-        }
-        personnelList[index].documents.push(doc);
-        localStorage.setItem('personnelList', JSON.stringify(personnelList));
-        document.getElementById(`doc-list-${index}`).innerHTML = renderDocumentList(personnelList[index].documents, index);
+        reader.readAsDataURL(item.file);
       };
-      reader.readAsDataURL(file);
+
+      processNext();
+      pendingUploads[index] = [];
+      document.getElementById(`fileInput-${index}`).value = '';
     }
 
     function renderDocumentList(documents, index) {
       if (!documents.length) return '<i>No documents uploaded</i>';
       return documents.map((d, docIndex) => `
         <div>
-          📎 <a href="${d.content}" download="${d.name}" target="_blank">${d.name}</a>
+          📎 <strong>[${d.category}]</strong> <a href="${d.content}" download="${d.name}" target="_blank">${d.name}</a>
           <button class="remove-btn" onclick="removeDocument(${index}, ${docIndex})">❌</button>
         </div>
       `).join('');

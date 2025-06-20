@@ -5,18 +5,69 @@
   <title>Awards & Commendations</title>
   <style>
     body { font-family: 'Segoe UI'; margin: 0; background: #f5f5f5; }
-    .sidebar { width: 220px; position: fixed; top: 0; bottom: 0; background: #000; color: #FFD700; padding: 20px; }
-    .sidebar h2 { font-size: 24px; color: #FFA500; border-bottom: 2px solid #FFA500; padding-bottom: 10px; }
-    .sidebar a { display: block; color: #FFD700; text-decoration: none; margin: 10px 0; padding: 8px 12px; border-radius: 5px; }
-    .sidebar a.active, .sidebar a:hover { background: #FFA500; color: #000; }
-    .main-content { margin-left: 240px; padding: 30px; }
-    h1 { font-size: 28px; }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 5px; }
-    .form-group input { width: 100%; padding: 8px; }
-    button { padding: 10px 20px; background: #FFA500; border: none; color: #000; border-radius: 5px; cursor: pointer; margin-right: 10px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+    .sidebar h2 {
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+    }
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+    .main-content {
+      margin-left: 240px;
+      padding: 30px;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+    td a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    td a:hover {
+      text-decoration: underline;
+    }
+    .no-records {
+      margin-top: 20px;
+      color: #555;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -29,104 +80,54 @@
   </div>
 
   <div class="main-content">
-    <h1>Awards & Commendations</h1>
-
-    <div class="form-group">
-      <label>Employee Name:</label>
-      <input type="text" id="employeeName" />
-    </div>
-    <div class="form-group">
-      <label>Award/Commendation:</label>
-      <input type="text" id="awardDetail" />
-    </div>
-    <button id="saveBtn" onclick="saveAward()">Add Award</button>
-    <button id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">Cancel Edit</button>
+    <h1>🏅 Awards & Commendations</h1>
 
     <table>
       <thead>
         <tr>
           <th>Employee Name</th>
+          <th>Rank</th>
           <th>Award/Commendation</th>
-          <th>Actions</th>
         </tr>
       </thead>
       <tbody id="awardsTable"></tbody>
     </table>
+
+    <div id="noAwardsMessage" class="no-records" style="display: none;">
+      No awards or commendations found.
+    </div>
   </div>
 
   <script>
-    let editIndex = -1; // -1 means we're adding new
+    document.addEventListener("DOMContentLoaded", function () {
+      const table = document.getElementById("awardsTable");
+      const noMessage = document.getElementById("noAwardsMessage");
+      const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
+      let found = false;
 
-    function loadAwards() {
-      const awards = JSON.parse(localStorage.getItem('awardsCommendations')) || [];
-      const tbody = document.getElementById('awardsTable');
-      tbody.innerHTML = '';
-      awards.forEach((award, index) => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${award.employeeName}</td>
-            <td>${award.awardDetail}</td>
-            <td>
-              <button onclick="startEdit(${index})">Edit</button>
-              <button onclick="deleteAward(${index})">Delete</button>
-            </td>
-          </tr>
-        `;
+      personnelList.forEach(person => {
+        const fullName = person.fullName || 'Unknown';
+        const rank = person.rank || 'N/A';
+        const documents = Array.isArray(person.documents) ? person.documents : [];
+
+        documents.forEach(doc => {
+          if (doc.category === 'Award/Commendation' && doc.name && doc.content) {
+            found = true;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${fullName}</td>
+              <td>${rank}</td>
+              <td><a href="${doc.content}" download="${doc.name}" target="_blank">${doc.name}</a></td>
+            `;
+            table.appendChild(row);
+          }
+        });
       });
-    }
 
-    function saveAward() {
-      const name = document.getElementById('employeeName').value.trim();
-      const award = document.getElementById('awardDetail').value.trim();
-      if (!name || !award) return alert('Please enter all fields!');
-
-      const awards = JSON.parse(localStorage.getItem('awardsCommendations')) || [];
-
-      if (editIndex === -1) {
-        // Add new award
-        awards.push({ employeeName: name, awardDetail: award });
-      } else {
-        // Update existing award
-        awards[editIndex] = { employeeName: name, awardDetail: award };
-        editIndex = -1;
-        document.getElementById('saveBtn').textContent = 'Add Award';
-        document.getElementById('cancelEditBtn').style.display = 'none';
+      if (!found) {
+        noMessage.style.display = "block";
       }
-
-      localStorage.setItem('awardsCommendations', JSON.stringify(awards));
-      loadAwards();
-      document.getElementById('employeeName').value = '';
-      document.getElementById('awardDetail').value = '';
-    }
-
-    function startEdit(index) {
-      const awards = JSON.parse(localStorage.getItem('awardsCommendations')) || [];
-      const award = awards[index];
-      document.getElementById('employeeName').value = award.employeeName;
-      document.getElementById('awardDetail').value = award.awardDetail;
-      editIndex = index;
-      document.getElementById('saveBtn').textContent = 'Update Award';
-      document.getElementById('cancelEditBtn').style.display = 'inline-block';
-    }
-
-    function cancelEdit() {
-      editIndex = -1;
-      document.getElementById('employeeName').value = '';
-      document.getElementById('awardDetail').value = '';
-      document.getElementById('saveBtn').textContent = 'Add Award';
-      document.getElementById('cancelEditBtn').style.display = 'none';
-    }
-
-    function deleteAward(index) {
-      const awards = JSON.parse(localStorage.getItem('awardsCommendations')) || [];
-      awards.splice(index, 1);
-      localStorage.setItem('awardsCommendations', JSON.stringify(awards));
-      loadAwards();
-      // If deleting during edit, reset form
-      cancelEdit();
-    }
-
-    loadAwards();
+    });
   </script>
 </body>
 </html>

@@ -55,10 +55,16 @@
       color: #333;
     }
 
+    input[type="text"], button {
+      padding: 8px 12px;
+      margin: 10px 5px 20px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
       background: #fff;
     }
 
@@ -66,6 +72,7 @@
       padding: 12px;
       border: 1px solid #ccc;
       text-align: left;
+      vertical-align: middle;
     }
 
     th {
@@ -76,14 +83,40 @@
       background-color: #f9f9f9;
     }
 
-    .qualified {
+    .eligible {
       color: green;
       font-weight: bold;
     }
 
-    .not-qualified {
+    .not-eligible {
       color: red;
       font-weight: bold;
+    }
+
+    .rank-input {
+      width: 100%;
+      padding: 5px;
+    }
+
+    .update-btn {
+      padding: 5px 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .update-btn:hover {
+      background: #218838;
+    }
+
+    .profile-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ccc;
     }
   </style>
 </head>
@@ -100,64 +133,121 @@
   </div>
 
   <div class="main-content">
-    <h1>Promotion Status</h1>
+    <h1>Promotion Eligibility</h1>
+
+    <p><strong>Total Qualified for Promotion:</strong> <span id="qualifiedCount">0</span></p>
+
+    <input type="text" id="searchInput" placeholder="Search personnel..." />
+    <button onclick="viewAll()">View All</button>
+
     <table id="promotion-table">
       <thead>
         <tr>
-          <th>Full Name</th>
-          <th>Rank</th>
-          <th>Years in Present Rank</th>
-          <th>Exactly Date Hired</th>
-          <th>Status</th>
+          <th>Photo</th>
+          <th>Employee</th>
+          <th>Last Rank</th>
+          <th>Current Rank</th>
+          <th>Years in Rank</th>
+          <th>Next Rank</th>
+          <th>Eligibility Status</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <!-- Table rows inserted here -->
+        <!-- Dynamic rows -->
       </tbody>
     </table>
   </div>
 
   <script>
-    function calculateYears(dateHired) {
+    function calculateYears(dateString) {
+      if (!dateString) return 0;
       const today = new Date();
-      const hiredDate = new Date(dateHired);
-      const diff = today - hiredDate;
-      return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25)); // Approximate year diff
+      const fromDate = new Date(dateString);
+      const diff = today - fromDate;
+      return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
     }
 
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    }
-
-    function loadPromotionTable() {
+    function loadPromotionTable(filter = '') {
       const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
       const tbody = document.querySelector("#promotion-table tbody");
+      const qualifiedCountEl = document.getElementById("qualifiedCount");
       tbody.innerHTML = "";
 
-      personnel.forEach(person => {
-        const years = calculateYears(person.dateHired);
-        const qualified = years >= 3;
+      let qualifiedCount = 0;
+
+      personnel.forEach((person, index) => {
+        const fullName = person.fullName || "N/A";
+        const rank = person.rank || "N/A";
+        const lastRank = person.lastRank || "—";
+        const photo = person.photo || "https://via.placeholder.com/50";
+        const dateHired = person.dateHired || "";
+        const lastPromoted = person.lastPromoted || dateHired;
+
+        const yearsInRank = calculateYears(lastPromoted);
+        const eligible = yearsInRank >= 2;
+
+        if (filter && !fullName.toLowerCase().includes(filter.toLowerCase())) return;
+
+        if (eligible) qualifiedCount++;
 
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${person.fullName}</td>
-          <td>${person.rank || "N/A"}</td>
-          <td>${years}</td>
-          <td>${formatDate(person.dateHired)}</td>
-          <td class="${qualified ? 'qualified' : 'not-qualified'}">
-            ${qualified ? "✅ Qualified" : "❌ Not Qualified"}
+          <td><img src="${photo}" class="profile-photo" alt="${fullName}" /></td>
+          <td>${fullName}</td>
+          <td>${lastRank}</td>
+          <td>${rank}</td>
+          <td>${yearsInRank}</td>
+          <td>
+            ${eligible ? `<input type="text" class="rank-input" value="${rank}" id="next-rank-${index}" />` : '—'}
+          </td>
+          <td class="${eligible ? 'eligible' : 'not-eligible'}">
+            ${eligible ? "Promote" : "Not"}
+          </td>
+          <td>
+            ${eligible ? `<button class="update-btn" onclick="promote(${index})">Change</button>` : '—'}
           </td>
         `;
         tbody.appendChild(row);
       });
+
+      qualifiedCountEl.textContent = qualifiedCount;
     }
 
-    window.onload = loadPromotionTable;
+    function promote(index) {
+      const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
+      const newRankInput = document.getElementById(`next-rank-${index}`);
+      const newRank = newRankInput ? newRankInput.value.trim() : "";
+
+      if (!newRank) {
+        alert("Please enter a valid rank.");
+        return;
+      }
+
+      personnel[index].lastRank = personnel[index].rank;
+      personnel[index].rank = newRank;
+      personnel[index].lastPromoted = new Date().toISOString().split("T")[0];
+
+      localStorage.setItem("personnelList", JSON.stringify(personnel));
+
+      alert("Rank updated successfully! Eligibility will reset.");
+      loadPromotionTable(document.getElementById("searchInput").value);
+    }
+
+    function viewAll() {
+      document.getElementById("searchInput").value = '';
+      loadPromotionTable();
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const filter = this.value.trim();
+      loadPromotionTable(filter);
+    });
+
+    window.onload = () => {
+      document.getElementById("searchInput").value = '';
+      loadPromotionTable();
+    };
   </script>
 
 </body>

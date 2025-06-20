@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <title>Admin Dashboard</title>
   <style>
+    /* Styles unchanged */
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f5f5f5;
     }
-
     .sidebar {
       width: 220px;
       position: fixed;
@@ -19,7 +19,6 @@
       color: #FFD700;
       padding: 20px;
     }
-
     .sidebar h2 {
       margin-top: 0;
       font-size: 24px;
@@ -27,7 +26,6 @@
       border-bottom: 2px solid #FFA500;
       padding-bottom: 10px;
     }
-
     .sidebar a {
       display: block;
       color: #FFD700;
@@ -37,26 +35,21 @@
       border-radius: 5px;
       transition: background 0.3s, color 0.3s;
     }
-
     .sidebar a.active,
     .sidebar a:hover {
       background: #FFA500;
       color: #000;
     }
-
     .main-content {
       margin-left: 240px;
       padding: 30px;
       min-height: 100vh;
-      background-color: #f5f5f5;
     }
-
     .header h1 {
       color: #000;
       font-size: 32px;
       margin-bottom: 10px;
     }
-
     .card-group {
       margin-bottom: 40px;
       background: #fff;
@@ -64,7 +57,6 @@
       padding: 20px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-
     .group-title {
       font-size: 20px;
       font-weight: bold;
@@ -73,13 +65,11 @@
       border-bottom: 2px solid #FFA500;
       padding-bottom: 5px;
     }
-
     .card-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 20px;
     }
-
     .card {
       background-color: #fff;
       border-left: 6px solid #FFA500;
@@ -88,23 +78,19 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s;
     }
-
     .card:hover {
       transform: scale(1.02);
     }
-
     .card h3 {
       margin: 0 0 10px;
       font-size: 18px;
       color: #000;
     }
-
     .card span {
       font-size: 2.5em;
       color: #FFA500;
       font-weight: bold;
     }
-
     .card a.button-link {
       display: inline-block;
       margin-top: 10px;
@@ -117,7 +103,6 @@
       font-weight: bold;
       transition: background-color 0.3s;
     }
-
     .card a.button-link:hover {
       background-color: #e69500;
     }
@@ -140,9 +125,9 @@
       <p>Welcome, Admin User</p>
     </div>
 
-    <!-- 🎁 Personnel Records Group -->
+    <!-- Personnel Records Group -->
     <div class="card-group">
-      <div class="group-title">🎁 Personnel Records</div>
+      <div class="group-title">👥 Personnel Records</div>
       <div class="card-container">
         <div class="card">
           <h3>Personnel Details</h3>
@@ -163,9 +148,9 @@
       </div>
     </div>
 
-    <!-- 🎁 Morale & Welfare Group -->
+    <!-- Morale & Welfare Group -->
     <div class="card-group">
-      <div class="group-title">🎁 Morale & Welfare</div>
+      <div class="group-title">❤️ Morale & Welfare</div>
       <div class="card-container">
         <div class="card">
           <h3>Morale & Welfare Benefits</h3>
@@ -182,7 +167,7 @@
       </div>
     </div>
 
-    <!-- 👨‍💼 HR Management Group -->
+    <!-- HR Management Group -->
     <div class="card-group">
       <div class="group-title">👨‍💼 Human Resource Management</div>
       <div class="card-container">
@@ -211,42 +196,47 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const personnel = JSON.parse(localStorage.getItem('personnelList')) || [];
-      document.getElementById('personnelRecords').textContent = personnel.length;
-      document.getElementById('recruitedCount').textContent = personnel.length;
+  document.addEventListener('DOMContentLoaded', () => {
+    const personnel = JSON.parse(localStorage.getItem('personnelList')) || [];
+    const recruitmentData = JSON.parse(localStorage.getItem('recruitmentData')) || [];
+    const leaves = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+    const clearances = JSON.parse(localStorage.getItem('clearanceRequests')) || [];
+    const trainings = JSON.parse(localStorage.getItem('trainings')) || [];
 
-      function calculateYears(dateHired) {
-        const today = new Date();
-        const hiredDate = new Date(dateHired);
-        const diff = today - hiredDate;
-        return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+    const calculateYears = (dateStr) => {
+      if (!dateStr) return 0;
+      const diff = new Date() - new Date(dateStr);
+      return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+    };
+
+    document.getElementById('personnelRecords').textContent = personnel.length;
+    document.getElementById('recruitedCount').textContent = recruitmentData.length;
+    document.getElementById('leaveRecords').textContent = leaves.length;
+    document.getElementById('clearanceRecords').textContent = clearances.length;
+    document.getElementById('trainingsCount').textContent = trainings.length;
+
+    let placementCnt = 0, medicalCnt = 0, awardsCnt = 0;
+
+    personnel.forEach(p => {
+      const hd = p.dateHired || null;
+      if (calculateYears(hd) >= 2) placementCnt++;
+      if (Array.isArray(p.documents)) {
+        p.documents.forEach(doc => {
+          const cat = (doc.category || '').toLowerCase();
+          if (cat === 'medical record') medicalCnt++;
+          if (['award','commendation','award/commendation'].includes(cat)) awardsCnt++;
+        });
       }
-
-      const qualified = personnel.filter(p => calculateYears(p.dateHired) >= 3);
-      document.getElementById('qualifiedPromotions').textContent = qualified.length;
-
-      const placement = personnel.filter(p => calculateYears(p.dateHired) >= 2);
-      document.getElementById('placementCount').textContent = placement.length;
-
-      const leaves = JSON.parse(localStorage.getItem('leaveRequests')) || [];
-      document.getElementById('leaveRecords').textContent = leaves.length;
-
-      const clearances = JSON.parse(localStorage.getItem('clearanceRequests')) || [];
-      document.getElementById('clearanceRecords').textContent = clearances.length;
-
-      const medicalRecords = JSON.parse(localStorage.getItem('medicalRecords')) || [];
-      document.getElementById('medicalRecordsCount').textContent = medicalRecords.length;
-
-      const awards = JSON.parse(localStorage.getItem('awardsCommendations')) || [];
-      document.getElementById('awardsCount').textContent = awards.length;
-
-      const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
-      document.getElementById('maintenanceCount').textContent = inventory.filter(item => item.status === 'Needs Maintenance').length;
-
-      const trainings = JSON.parse(localStorage.getItem('trainings')) || [];
-      document.getElementById('trainingsCount').textContent = trainings.length;
     });
+
+    document.getElementById('placementCount').textContent = placementCnt;
+    document.getElementById('medicalRecordsCount').textContent = medicalCnt;
+    document.getElementById('awardsCount').textContent = awardsCnt;
+
+    // ✅ Read the "promotionQualifiedCount" stored by promotion.html
+    const promotionCount = parseInt(localStorage.getItem('promotionQualifiedCount') || '0', 10);
+    document.getElementById('qualifiedPromotions').textContent = promotionCount;
+  });
   </script>
 </body>
 </html>
