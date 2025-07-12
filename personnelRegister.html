@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Personnel Registration - Bureau of Fire Protection</title>
+<style>
+   body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+    }
+    .dropdown-toggle {
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      color: #FFD700;
+      border-radius: 5px;
+      margin: 8px 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dropdown-toggle:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .dropdown-content {
+      display: none;
+      padding-left: 20px;
+      margin-top: 5px;
+    }
+
+    .dropdown-content a {
+      font-size: 14px;
+      padding: 6px 0;
+      display: block;
+    }
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+     .main-content {
+      margin-left: 240px;
+      padding: 30px;
+      background-color: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    .header {
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: #000;
+      margin: 0;
+      font-size: 32px;
+    }
+    
+
+    .header p {
+      color: #444;
+      margin-top: 5px;
+    }
+
+    .main-content {
+  margin-left: 240px;
+  padding: 30px 40px;
+  background-color: #fff;  /* white background */
+  min-height: 100vh;
+  color: #000;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* Form styling */
+.registration-form h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: 600;
+}
+
+.form-row {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #444;
+}
+
+.form-row input[type="text"],
+.form-row input[type="date"],
+.form-row input[type="file"],
+.form-row select {
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1.8px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+
+.form-row input[type="text"]:focus,
+.form-row input[type="date"]:focus,
+.form-row input[type="file"]:focus,
+.form-row select:focus {
+  border-color: #FFA500;
+  outline: none;
+}
+
+/* Buttons */
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+button.cancel,
+button.submit {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button.cancel {
+  background-color: #ddd;
+  color: #444;
+}
+
+button.cancel:hover {
+  background-color: #bbb;
+}
+
+button.submit {
+  background-color: #FFA500;
+  color: #000;
+}
+
+button.submit:hover {
+  background-color: #FFB733;
+}
+
+/* Personnel List Table */
+.personnel-list h2 {
+  margin-top: 40px;
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: 600;
+}
+
+#personnel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+#personnel-table thead th {
+  border-bottom: 3px solid #FFA500;
+  padding: 12px 10px;
+  text-align: left;
+  background-color: #FFF8E1;
+  color: #444;
+}
+
+#personnel-table tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+#personnel-table tbody tr:hover {
+  background-color: #FFF3D9;
+}
+
+/* Photo thumbnails */
+.photo-thumb {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Edit button */
+button.edit {
+  background-color: #FFA500;
+  color: #000;
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button.edit:hover {
+  background-color: #FFB733;
+}
+
+</style>  
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="admin.html" style="display: flex; align-items: center; margin-bottom: 20px;">
+      <img src="logo-bfp.jpg" alt="Logo"
+        style="height: 30px; width: 30px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
+      <span style="color: #FFD700; font-weight: bold;">Villanueva FireStation</span>
+    </a>
+
+    <a href="/leaveManagement.html">📝 Leave Management</a>
+    <a href="/inventoryControl.html">📦 Inventory Control</a>
+    <a href="/clearanceSystem.html">✅ Clearance System</a>
+    <a href="/personnelRegister.html">👥 Personnel Register</a>
+
+    <!-- Personnel Records -->
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        👥 Personnel Records <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/personnelProfile.html">📁 Personnel Profile (201 Files)</a>
+        <a href="/leaveRecords.html">📑 Leave Records</a>
+        <a href="/ClearanceRecords.html">📋 Clearance Records</a>
+      </div>
+    </div>
+
+    <!-- Morale & Welfare -->
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        ❤️ Morale & Welfare <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/medicalRecords.html">🩺 Medical Records of Employees</a>
+        <a href="/awardsCommendations.html">🏅 Awards & Commendations</a>
+      </div>
+    </div>
+
+    <!-- HR Management -->
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        👨‍💼 HR Management <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/promotion.html">📈 Qualified for Promotion</a>
+        <a href="/recruitment.html">👥 Recruited Personnel</a>
+        <a href="/trainings.html">🎓 Trainings</a>
+        <a href="/placement.html">📍 Placement (≥ 2 Years)</a>
+      </div>
+    </div>
+
+    <!-- Operation Dropdown -->
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        🚒 Operation <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/commel.html">📡 Commel</a>
+        <a href="/intelligence.html">🕵️ Intelligence and Investigation</a>
+        <a href="/medicalServices.html">🩺 Medical Services</a>
+        <a href="/rescueUnit.html">🚑 Rescue Unit</a>
+        <a href="/fireEngine.html">🚒 Fire Engine Company</a>
+      </div>
+    </div>
+
+    <a href="/index.html">🚪 Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Personnel Registration</h1>
+    <section class="registration-form">
+      <h2>Register New Personnel</h2>
+      <form id="personnel-form">
+        <input type="hidden" id="edit-index" value="" />
+
+        <div class="form-row">
+          <label for="badge-number">Badge Number</label>
+          <input type="text" id="badge-number" placeholder="Enter Badge Number" required />
+        </div>
+
+        <div class="form-row">
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" placeholder="Enter First Name" required />
+        </div>
+
+        <div class="form-row">
+          <label for="middle-name">Middle Name</label>
+          <input type="text" id="middle-name" placeholder="Enter Middle Name" />
+        </div>
+
+        <div class="form-row">
+          <label for="last-name">Last Name</label>
+          <input type="text" id="last-name" placeholder="Enter Last Name" required />
+        </div>
+
+        <div class="form-row">
+          <label for="rank">Rank</label>
+          <select id="rank" required>
+            <option value="" disabled selected>Select Rank</option>
+            <option>FO1</option>
+            <option>FO2</option>
+            <option>FO3</option>
+            <option>SFO1</option>
+            <option>SFO2</option>
+            <option>SFO3</option>
+            <option>SFO4</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="designation">Designation</label>
+          <input type="text" id="designation" placeholder="Enter Designation" required />
+        </div>
+
+        <div class="form-row">
+          <label for="station">Station Assignment</label>
+          <input type="text" id="station" placeholder="Enter Station Name" required />
+        </div>
+
+        <div class="form-row">
+          <label for="birth-date">Birth Date</label>
+          <input type="date" id="birth-date" required />
+        </div>
+
+        <div class="form-row">
+          <label for="date-hired">Date Hired</label>
+          <input type="date" id="date-hired" required />
+        </div>
+
+        <div class="form-row">
+          <label for="photo">Upload Photo</label>
+          <input type="file" id="photo" accept="image/*" />
+        </div>
+
+        <div class="form-actions">
+          <button type="reset" class="cancel">Cancel</button>
+          <button type="submit" class="submit">Register Personnel</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="personnel-list">
+      <h2>All Registered Personnel</h2>
+      <table id="personnel-table">
+        <thead>
+          <tr>
+            <th>Badge No.</th>
+            <th>First Name</th>
+            <th>Middle Name</th>
+            <th>Last Name</th>
+            <th>Rank</th>
+            <th>Designation</th>
+            <th>Station</th>
+            <th>Birth Date</th>
+            <th>Date Hired</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Photo</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    function generateCredentials(firstName, lastName) {
+      const username = (firstName + "." + lastName).toLowerCase();
+      const password = Math.random().toString(36).slice(-8);
+      return { username, password };
+    }
+
+    function loadPersonnel() {
+      const tableBody = document.querySelector("#personnel-table tbody");
+      tableBody.innerHTML = "";
+      const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
+
+      personnel.forEach((person, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${person.badgeNumber}</td>
+          <td>${person.firstName}</td>
+          <td>${person.middleName || ''}</td>
+          <td>${person.lastName}</td>
+          <td>${person.rank}</td>
+          <td>${person.designation}</td>
+          <td>${person.station}</td>
+          <td>${person.birthDate}</td>
+          <td>${person.dateHired}</td>
+          <td>${person.username}</td>
+          <td>${person.password}</td>
+          <td>${person.photo ? `<img src="${person.photo}" alt="Photo" class="photo-thumb" />` : ''}</td>
+          <td><button class="edit" onclick="editPersonnel(${index})">Edit</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function editPersonnel(index) {
+      const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
+      const person = personnelList[index];
+      document.getElementById("edit-index").value = index;
+      document.getElementById("badge-number").value = person.badgeNumber;
+      document.getElementById("first-name").value = person.firstName;
+      document.getElementById("middle-name").value = person.middleName;
+      document.getElementById("last-name").value = person.lastName;
+      document.getElementById("rank").value = person.rank;
+      document.getElementById("designation").value = person.designation;
+      document.getElementById("station").value = person.station;
+      document.getElementById("birth-date").value = person.birthDate;
+      document.getElementById("date-hired").value = person.dateHired;
+      document.getElementById("photo").value = "";
+      currentPhotoData = person.photo || "";
+    }
+
+    let currentPhotoData = "";
+
+    document.getElementById("personnel-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const badgeNumber = document.getElementById("badge-number").value.trim();
+      const firstName = document.getElementById("first-name").value.trim();
+      const middleName = document.getElementById("middle-name").value.trim();
+      const lastName = document.getElementById("last-name").value.trim();
+      const rank = document.getElementById("rank").value;
+      const designation = document.getElementById("designation").value.trim();
+      const station = document.getElementById("station").value.trim();
+      const birthDate = document.getElementById("birth-date").value;
+      const dateHired = document.getElementById("date-hired").value;
+      const editIndex = document.getElementById("edit-index").value;
+
+      if (!badgeNumber || !firstName || !lastName || !rank || !designation || !station || !birthDate || !dateHired) {
+        alert("Please fill out all required fields.");
+        return;
+      }
+
+      let personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
+
+      let credentials;
+      if (editIndex !== "") {
+        credentials = {
+          username: personnelList[editIndex].username,
+          password: personnelList[editIndex].password
+        };
+        personnelList.splice(editIndex, 1);
+      } else {
+        credentials = generateCredentials(firstName, lastName);
+      }
+
+      const photoInput = document.getElementById("photo");
+
+      if (photoInput.files && photoInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          currentPhotoData = event.target.result;
+          savePersonnel();
+        };
+        reader.readAsDataURL(photoInput.files[0]);
+      } else {
+        if (editIndex !== "") {
+          currentPhotoData = currentPhotoData || "";
+        } else {
+          currentPhotoData = "";
+        }
+        savePersonnel();
+      }
+
+      function savePersonnel() {
+        const newPersonnel = {
+          badgeNumber,
+          firstName,
+          middleName,
+          lastName,
+          rank,
+          designation,
+          station,
+          birthDate,
+          dateHired,
+          username: credentials.username,
+          password: credentials.password,
+          photo: currentPhotoData
+        };
+
+        personnelList.push(newPersonnel);
+        localStorage.setItem("personnelList", JSON.stringify(personnelList));
+
+        if (editIndex === "") {
+          alert(`Personnel Registered\nUsername: ${credentials.username}\nPassword: ${credentials.password}`);
+        } else {
+          alert("Personnel updated successfully.");
+        }
+
+        document.getElementById("personnel-form").reset();
+        document.getElementById("edit-index").value = "";
+        currentPhotoData = "";
+        loadPersonnel();
+      }
+    });
+
+    window.onload = loadPersonnel;
+  </script>
+  <script>
+    function toggleMenu(element) {
+      const dropdown = element.nextElementSibling;
+      const arrow = element.querySelector("span");
+      if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+        arrow.textContent = "▼";
+      } else {
+        dropdown.style.display = "block";
+        arrow.textContent = "▲";
+      }
+    }
+  </script>
+</body>
+</html>

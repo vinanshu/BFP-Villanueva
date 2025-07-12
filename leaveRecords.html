@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Leave Records</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+    }
+
+    .dropdown-toggle {
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      color: #FFD700;
+      border-radius: 5px;
+      margin: 8px 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dropdown-toggle:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .dropdown-content {
+      display: none;
+      padding-left: 20px;
+      margin-top: 5px;
+    }
+
+    .dropdown-content a {
+      font-size: 14px;
+      padding: 6px 0;
+      display: block;
+    }
+
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 40px 20px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #000;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #FFA500;
+      color: #000;
+    }
+
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #6b7280;
+      font-style: italic;
+      padding: 20px;
+    }
+
+    .status {
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .pending {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .approved {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .manage-btn {
+      background-color: #3b82f6;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .manage-btn:hover {
+      background-color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="admin.html" style="display: flex; align-items: center; margin-bottom: 20px;">
+      <img src="logo-bfp.jpg" alt="Logo"
+        style="height: 30px; width: 30px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
+      <span style="color: #FFD700; font-weight: bold;">Villanueva FireStation</span>
+    </a>
+
+    <a href="/leaveManagement.html">📝 Leave Management</a>
+    <a href="/inventoryControl.html">📦 Inventory Control</a>
+    <a href="/clearanceSystem.html">✅ Clearance System</a>
+    <a href="/personnelRegister.html">👥 Personnel Register</a>
+
+    <!-- Sidebar Dropdowns -->
+    <div class="dropdown-section" style="background-color: green; border-radius: 20px;">
+      <div class="dropdown-toggle" onclick="toggleMenu(this) " >
+        👥 Personnel Records  <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/personnelProfile.html" >📁 Personnel Profile (201 Files)</a>
+        <a href="leaveRecords.html" class="active">📑 Leave Records</a>
+        <a href="/ClearanceRecords.html">📋 Clearance Records</a>
+      </div>
+    </div>
+
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        ❤️ Morale & Welfare <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/medicalRecords.html">🩺 Medical Records of Employees</a>
+        <a href="/awardsCommendations.html">🏅 Awards & Commendations</a>
+      </div>
+    </div>
+
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        👨‍💼 HR Management <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/promotion.html">📈 Qualified for Promotion</a>
+        <a href="/recruitment.html">👥 Recruited Personnel</a>
+        <a href="/trainings.html">🎓 Trainings</a>
+        <a href="/placement.html">📍 Placement (≥ 2 Years)</a>
+      </div>
+    </div>
+    <!-- Operation Dropdown -->
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        🚒 Operation <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/commel.html">📡 Commel</a>
+        <a href="/intelligence.html">🕵️ Intelligence and Investigation</a>
+        <a href="/medicalServices.html">🩺 Medical Services</a>
+        <a href="/rescueUnit.html">🚑 Rescue Unit</a>
+        <a href="/fireEngine.html">🚒 Fire Engine Company</a>
+      </div>
+    </div>
+
+    <a href="/index.html">🚪 Logout</a>
+  </div>
+
+
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>📅 Leave Records</h1>
+    <table id="leaveTable">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Rank</th>
+          <th>Date of Filing</th>
+          <th>Leave Type</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Number of Days</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="leaveBody"></tbody>
+    </table>
+    <div class="no-data" id="noData" style="display:none;">No personnel or leave records found.</div>
+  </div>
+
+  <script>
+    const leaveBody = document.getElementById('leaveBody');
+    const noData = document.getElementById('noData');
+
+    const personnelList = JSON.parse(localStorage.getItem('personnelList')) || [];
+    const leaveRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+
+    if (personnelList.length === 0 || leaveRequests.length === 0) {
+      noData.style.display = 'block';
+    } else {
+      personnelList.forEach(person => {
+        const requests = leaveRequests.filter(req => req.username === person.username);
+
+        if (requests.length > 0) {
+          requests.forEach(req => {
+            const status = req.status || 'Pending';
+            const statusClass = {
+              pending: 'pending',
+              approved: 'approved',
+              rejected: 'rejected'
+            }[status.toLowerCase()] || 'pending';
+
+            const manageUrl = `leaveManagement.html?username=${encodeURIComponent(person.username)}&date=${encodeURIComponent(req.dateOfFiling)}`;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${person.fullName}</td>
+              <td>${person.rank}</td>
+              <td>${req.dateOfFiling}</td>
+              <td>${req.leaveType}</td>
+              <td>${req.startDate}</td>
+              <td>${req.endDate}</td>
+              <td>${req.numDays}</td>
+              <td><span class="status ${statusClass}">${status}</span></td>
+              <td><a href="${manageUrl}" class="manage-btn">Manage</a></td>
+            `;
+            leaveBody.appendChild(row);
+          });
+        } else {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${person.fullName}</td>
+            <td>${person.rank}</td>
+            <td colspan="7" style="text-align:center; color: #9ca3af;">No Leave Record</td>
+          `;
+          leaveBody.appendChild(row);
+        }
+      });
+    }
+  </script>
+  
+<script>
+    function toggleMenu(element) {
+      const dropdown = element.nextElementSibling;
+      const arrow = element.querySelector("span");
+      if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+        arrow.textContent = "▼";
+      } else {
+        dropdown.style.display = "block";
+        arrow.textContent = "▲";
+      }
+    }
+  </script>
+
+
+</body>
+</html>

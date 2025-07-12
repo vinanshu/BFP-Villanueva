@@ -1,0 +1,426 @@
+<!-- Replace the old personnelProfile.html with this full updated version -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Personnel Profile</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+    }
+
+    .dropdown-toggle {
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      color: #FFD700;
+      border-radius: 5px;
+      margin: 8px 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dropdown-toggle:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .dropdown-content {
+      display: none;
+      padding-left: 20px;
+      margin-top: 5px;
+    }
+
+    .dropdown-content a {
+      font-size: 14px;
+      padding: 6px 0;
+      display: block;
+    }
+
+
+    .sidebar {
+      width: 240px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 8px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 40px 20px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #000;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #FFA500;
+      color: #000;
+    }
+
+    img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .edit-btn {
+      background-color: #FFA500;
+      color: black;
+    }
+
+    .save-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .save-files-btn {
+      margin-top: 5px;
+      background-color: #007BFF;
+      color: white;
+    }
+
+    .document-upload {
+      margin-top: 10px;
+    }
+
+    .document-list {
+      margin-top: 5px;
+      font-size: 0.9em;
+    }
+
+    .document-list div {
+      margin: 4px 0;
+    }
+
+    .remove-btn {
+      margin-left: 10px;
+      color: red;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .remove-btn:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="admin.html" style="display: flex; align-items: center; margin-bottom: 20px;">
+      <img src="logo-bfp.jpg" alt="Logo"
+        style="height: 30px; width: 30px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
+      <span style="color: #FFD700; font-weight: bold;">Villanueva FireStation</span>
+    </a>
+
+    <a href="/leaveManagement.html">📝 Leave Management</a>
+    <a href="/inventoryControl.html">📦 Inventory Control</a>
+    <a href="/clearanceSystem.html">✅ Clearance System</a>
+    <a href="/personnelRegister.html">👥 Personnel Register</a>
+
+    <!-- Sidebar Dropdowns -->
+    <div class="dropdown-section" style="background-color: green; border-radius: 20px;">
+      <div class="dropdown-toggle" onclick="toggleMenu(this) ">
+        👥 Personnel Records <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/personnelProfile.html" class="active">📁 Personnel Profile (201 Files)</a>
+        <a href="leaveRecords.html">📑 Leave Records</a>
+        <a href="/ClearanceRecords.html">📋 Clearance Records</a>
+      </div>
+    </div>
+
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        ❤️ Morale & Welfare <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/medicalRecords.html">🩺 Medical Records of Employees</a>
+        <a href="/awardsCommendations.html">🏅 Awards & Commendations</a>
+      </div>
+    </div>
+
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        👨‍💼 HR Management <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/promotion.html">📈 Qualified for Promotion</a>
+        <a href="/recruitment.html">👥 Recruited Personnel</a>
+        <a href="/trainings.html">🎓 Trainings</a>
+        <a href="/placement.html">📍 Placement (≥ 2 Years)</a>
+      </div>
+    </div>
+
+    <!-- Operation Dropdown -->
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        🚒 Operation <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/commel.html">📡 Commel</a>
+        <a href="/intelligence.html">🕵️ Intelligence and Investigation</a>
+        <a href="/medicalServices.html">🩺 Medical Services</a>
+        <a href="/rescueUnit.html">🚑 Rescue Unit</a>
+        <a href="/fireEngine.html">🚒 Fire Engine Company</a>
+      </div>
+    </div>
+
+    <a href="/index.html">🚪 Logout</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>📁 Personnel Profile (201 Files)</h1>
+    <table id="personnelTable">
+      <thead>
+        <tr>
+          <th>Photo</th>
+          <th>Full Name</th>
+          <th>ID Number</th>
+          <th>Rank</th>
+          <th>Designation</th>
+          <th>Station</th>
+          <th>Birth Date</th>
+          <th>Date Hired</th>
+          <th>Retirement Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="personnelBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const personnelList = JSON.parse(localStorage.getItem('personnelList')) || [];
+    const pendingUploads = {};
+
+    function renderTable() {
+      const tbody = document.getElementById('personnelBody');
+      tbody.innerHTML = '';
+
+      personnelList.forEach((p, index) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td><img src="${p.photo || 'https://via.placeholder.com/60'}" /></td>
+          <td><input type="text" value="${p.fullName}" data-field="fullName" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.idNumber}" data-field="idNumber" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.rank}" data-field="rank" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.designation}" data-field="designation" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.station}" data-field="station" data-index="${index}" disabled></td>
+          <td><input type="date" value="${p.birthDate}" data-field="birthDate" data-index="${index}" disabled></td>
+          <td><input type="date" value="${p.dateHired}" data-field="dateHired" data-index="${index}" disabled></td>
+          <td><input type="date" value="${p.retirementDate || ''}" data-field="retirementDate" data-index="${index}" disabled></td>
+          <td>
+            <button class="btn edit-btn" onclick="toggleEdit(${index}, this)">Edit</button><br>
+            <div class="document-upload">
+              <select id="doc-category-${index}">
+                <option value="Medical Record">Medical Record</option>
+                <option value="Award/Commendation">Award/Commendation</option>
+                <option value="Others">Others</option>
+              </select>
+              <input type="file" multiple onchange="prepareUpload(event, ${index})" id="fileInput-${index}">
+              <button class="btn save-files-btn" onclick="saveUploadedFiles(${index})">Save Files</button>
+              <div class="document-list" id="doc-list-${index}">
+                ${renderDocumentList(p.documents || [], index)}
+              </div>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function toggleEdit(index, btn) {
+      const inputs = document.querySelectorAll(`[data-index="${index}"]`);
+      const isDisabled = inputs[0].disabled;
+
+      inputs.forEach(input => input.disabled = !isDisabled);
+
+      if (isDisabled) {
+        btn.textContent = "Save";
+        btn.className = "btn save-btn";
+      } else {
+        btn.textContent = "Edit";
+        btn.className = "btn edit-btn";
+        saveProfile(index);
+      }
+    }
+
+    function saveProfile(index) {
+      const inputs = document.querySelectorAll(`[data-index="${index}"]`);
+      inputs.forEach(input => {
+        const field = input.getAttribute('data-field');
+        personnelList[index][field] = input.value;
+      });
+      localStorage.setItem('personnelList', JSON.stringify(personnelList));
+      alert("Profile updated.");
+    }
+
+    function prepareUpload(event, index) {
+      const files = Array.from(event.target.files);
+      const category = document.getElementById(`doc-category-${index}`).value;
+
+      if (!pendingUploads[index]) pendingUploads[index] = [];
+      files.forEach(file => {
+        pendingUploads[index].push({ file, category });
+      });
+
+      alert(`${files.length} file(s) ready to be saved.`);
+    }
+
+    function saveUploadedFiles(index) {
+      const uploads = pendingUploads[index];
+      if (!uploads || uploads.length === 0) {
+        alert("No files to save.");
+        return;
+      }
+
+      const processNext = () => {
+        const item = uploads.shift();
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const doc = {
+            name: item.file.name,
+            content: e.target.result,
+            category: item.category
+          };
+          if (!personnelList[index].documents) {
+            personnelList[index].documents = [];
+          }
+          personnelList[index].documents.push(doc);
+          if (uploads.length > 0) {
+            processNext();
+          } else {
+            localStorage.setItem('personnelList', JSON.stringify(personnelList));
+            document.getElementById(`doc-list-${index}`).innerHTML = renderDocumentList(personnelList[index].documents, index);
+            alert("Files saved successfully.");
+          }
+        };
+        reader.readAsDataURL(item.file);
+      };
+
+      processNext();
+      pendingUploads[index] = [];
+      document.getElementById(`fileInput-${index}`).value = '';
+    }
+
+    function renderDocumentList(documents, index) {
+      if (!documents.length) return '<i>No documents uploaded</i>';
+      return documents.map((d, docIndex) => `
+        <div>
+          📎 <strong>[${d.category}]</strong> <a href="${d.content}" download="${d.name}" target="_blank">${d.name}</a>
+          <button class="remove-btn" onclick="removeDocument(${index}, ${docIndex})">❌</button>
+        </div>
+      `).join('');
+    }
+
+    function removeDocument(personnelIndex, docIndex) {
+      if (confirm("Are you sure you want to remove this document?")) {
+        personnelList[personnelIndex].documents.splice(docIndex, 1);
+        localStorage.setItem('personnelList', JSON.stringify(personnelList));
+        document.getElementById(`doc-list-${personnelIndex}`).innerHTML = renderDocumentList(personnelList[personnelIndex].documents, personnelIndex);
+      }
+    }
+
+    renderTable();
+  </script>
+  <script>
+    function toggleMenu(element) {
+      const dropdown = element.nextElementSibling;
+      const arrow = element.querySelector("span");
+      if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+        arrow.textContent = "▼";
+      } else {
+        dropdown.style.display = "block";
+        arrow.textContent = "▲";
+      }
+    }
+  </script>
+
+
+</body>
+
+</html>

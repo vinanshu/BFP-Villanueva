@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Awards & Commendations</title>
+  <style>
+    body { font-family: 'Segoe UI'; margin: 0; background: #f5f5f5; }
+    .dropdown-toggle {
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      color: #FFD700;
+      border-radius: 5px;
+      margin: 8px 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dropdown-toggle:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .dropdown-content {
+      display: none;
+      padding-left: 20px;
+      margin-top: 5px;
+    }
+
+    .dropdown-content a {
+      font-size: 14px;
+      padding: 6px 0;
+      display: block;
+    }
+
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+    .sidebar h2 {
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+    }
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+    .main-content {
+      margin-left: 240px;
+      padding: 30px;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+    td a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    td a:hover {
+      text-decoration: underline;
+    }
+    .no-records {
+      margin-top: 20px;
+      color: #555;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="admin.html" style="display: flex; align-items: center; margin-bottom: 20px;">
+      <img src="logo-bfp.jpg" alt="Logo"
+        style="height: 30px; width: 30px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
+      <span style="color: #FFD700; font-weight: bold;">Villanueva FireStation</span>
+    </a>
+
+    <a href="/leaveManagement.html">📝 Leave Management</a>
+    <a href="/inventoryControl.html">📦 Inventory Control</a>
+    <a href="/clearanceSystem.html">✅ Clearance System</a>
+    <a href="/personnelRegister.html">👥 Personnel Register</a>
+
+    <!-- Sidebar Dropdowns -->
+    <div class="dropdown-section" >
+      <div class="dropdown-toggle" onclick="toggleMenu(this) " >
+        👥 Personnel Records  <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/personnelProfile.html" >📁 Personnel Profile (201 Files)</a>
+        <a href="leaveRecords.html" >📑 Leave Records</a>
+        <a href="/ClearanceRecords.html" >📋 Clearance Records</a>
+      </div>
+    </div>
+
+    <div class="dropdown-section" style="background-color: green; border-radius: 20px;">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        ❤️ Morale & Welfare <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/medicalRecords.html" >🩺 Medical Records of Employees</a>
+        <a href="/awardsCommendations.html"class="active">🏅 Awards & Commendations</a>
+      </div>
+    </div>
+
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        👨‍💼 HR Management <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/promotion.html">📈 Qualified for Promotion</a>
+        <a href="/recruitment.html">👥 Recruited Personnel</a>
+        <a href="/trainings.html">🎓 Trainings</a>
+        <a href="/placement.html">📍 Placement (≥ 2 Years)</a>
+      </div>
+    </div>
+    <!-- Operation Dropdown -->
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
+        🚒 Operation <span>▼</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="/commel.html">📡 Commel</a>
+        <a href="/intelligence.html">🕵️ Intelligence and Investigation</a>
+        <a href="/medicalServices.html">🩺 Medical Services</a>
+        <a href="/rescueUnit.html">🚑 Rescue Unit</a>
+        <a href="/fireEngine.html">🚒 Fire Engine Company</a>
+      </div>
+    </div>
+
+    <a href="/index.html">🚪 Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>🏅 Awards & Commendations</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Employee Name</th>
+          <th>Rank</th>
+          <th>Award/Commendation</th>
+        </tr>
+      </thead>
+      <tbody id="awardsTable"></tbody>
+    </table>
+
+    <div id="noAwardsMessage" class="no-records" style="display: none;">
+      No awards or commendations found.
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const table = document.getElementById("awardsTable");
+      const noMessage = document.getElementById("noAwardsMessage");
+      const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
+      let found = false;
+
+      personnelList.forEach(person => {
+        const fullName = person.fullName || 'Unknown';
+        const rank = person.rank || 'N/A';
+        const documents = Array.isArray(person.documents) ? person.documents : [];
+
+        documents.forEach(doc => {
+          if (doc.category === 'Award/Commendation' && doc.name && doc.content) {
+            found = true;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${fullName}</td>
+              <td>${rank}</td>
+              <td><a href="${doc.content}" download="${doc.name}" target="_blank">${doc.name}</a></td>
+            `;
+            table.appendChild(row);
+          }
+        });
+      });
+
+      if (!found) {
+        noMessage.style.display = "block";
+      }
+    });
+  </script>
+  <script>
+    function toggleMenu(element) {
+      const dropdown = element.nextElementSibling;
+      const arrow = element.querySelector("span");
+      if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+        arrow.textContent = "▼";
+      } else {
+        dropdown.style.display = "block";
+        arrow.textContent = "▲";
+      }
+    }
+  </script>
+</body>
+</html>
