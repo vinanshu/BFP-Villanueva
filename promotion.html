@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -349,3 +350,259 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Promotion - Bureau of Fire Protection</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+    }
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 30px;
+      background-color: #fff;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input[type="text"], button {
+      padding: 8px 12px;
+      margin: 10px 5px 20px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #FFE4B5;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .eligible {
+      color: green;
+      font-weight: bold;
+    }
+
+    .not-eligible {
+      color: red;
+      font-weight: bold;
+    }
+
+    .rank-input {
+      width: 100%;
+      padding: 5px;
+    }
+
+    .update-btn {
+      padding: 5px 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .update-btn:hover {
+      background: #218838;
+    }
+
+    .profile-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="#" class="active">🎖️ Promotion</a>
+    <a href="/recruitment.html">🧑‍🎓 Recruitment</a>
+    <a href="/trainings.html">🏋️ Trainings</a>
+    <a href="/placement.html">📌 Placement</a>
+    <a href="/index.html">🔓 Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Promotion Eligibility</h1>
+
+    <p><strong>Total Qualified for Promotion:</strong> <span id="qualifiedCount">0</span></p>
+
+    <input type="text" id="searchInput" placeholder="Search personnel..." />
+    <button onclick="viewAll()">View All</button>
+
+    <table id="promotion-table">
+      <thead>
+        <tr>
+          <th>Photo</th>
+          <th>Employee</th>
+          <th>Last Rank</th>
+          <th>Current Rank</th>
+          <th>Years in Rank</th>
+          <th>Next Rank</th>
+          <th>Eligibility Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function calculateYears(dateString) {
+      if (!dateString) return 0;
+      const today = new Date();
+      const fromDate = new Date(dateString);
+      const diff = today - fromDate;
+      return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+    }
+
+    function loadPromotionTable(filter = '') {
+      const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
+      const tbody = document.querySelector("#promotion-table tbody");
+      const qualifiedCountEl = document.getElementById("qualifiedCount");
+      tbody.innerHTML = "";
+
+      let qualifiedCount = 0;
+
+      personnel.forEach((person, index) => {
+        const fullName = person.fullName || "N/A";
+        const rank = person.rank || "N/A";
+        const lastRank = person.lastRank || "—";
+        const photo = person.photo || "https://via.placeholder.com/50";
+        const dateHired = person.dateHired || "";
+        const lastPromoted = person.lastPromoted || dateHired;
+
+        const yearsInRank = calculateYears(lastPromoted);
+        const eligible = yearsInRank >= 2;
+
+        if (filter && !fullName.toLowerCase().includes(filter.toLowerCase())) return;
+
+        if (eligible) qualifiedCount++;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><img src="${photo}" class="profile-photo" alt="${fullName}" /></td>
+          <td>${fullName}</td>
+          <td>${lastRank}</td>
+          <td>${rank}</td>
+          <td>${yearsInRank}</td>
+          <td>
+            ${eligible ? `<input type="text" class="rank-input" value="${rank}" id="next-rank-${index}" />` : '—'}
+          </td>
+          <td class="${eligible ? 'eligible' : 'not-eligible'}">
+            ${eligible ? "Promote" : "Not"}
+          </td>
+          <td>
+            ${eligible ? `<button class="update-btn" onclick="promote(${index})">Change</button>` : '—'}
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      qualifiedCountEl.textContent = qualifiedCount;
+    }
+
+    function promote(index) {
+      const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
+      const newRankInput = document.getElementById(`next-rank-${index}`);
+      const newRank = newRankInput ? newRankInput.value.trim() : "";
+
+      if (!newRank) {
+        alert("Please enter a valid rank.");
+        return;
+      }
+
+      personnel[index].lastRank = personnel[index].rank;
+      personnel[index].rank = newRank;
+      personnel[index].lastPromoted = new Date().toISOString().split("T")[0];
+
+      localStorage.setItem("personnelList", JSON.stringify(personnel));
+
+      alert("Rank updated successfully! Eligibility will reset.");
+      loadPromotionTable(document.getElementById("searchInput").value);
+    }
+
+    function viewAll() {
+      document.getElementById("searchInput").value = '';
+      loadPromotionTable();
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const filter = this.value.trim();
+      loadPromotionTable(filter);
+    });
+
+    window.onload = () => {
+      document.getElementById("searchInput").value = '';
+      loadPromotionTable();
+    };
+  </script>
+
+</body>
+</html>
+>>>>>>> 901881a6848fb263508b2f2ef35e13c4981ea936

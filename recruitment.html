@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -393,3 +394,303 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recruitment - Bureau of Fire Protection</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+    }
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #FFA500;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 30px;
+      background-color: #fff;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    form div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    form input, form select {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    form button {
+      grid-column: span 3;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #218838;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: #FFE4B5;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    button.action-btn {
+      padding: 5px 10px;
+      margin: 2px;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .edit-btn {
+      background-color: #ffc107;
+      border: none;
+      color: black;
+    }
+
+    .edit-btn:hover {
+      background-color: #e0a800;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+      border: none;
+      color: white;
+    }
+
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="/promotion.html">🎖️ Promotion</a>
+    <a href="#" class="active">🧑‍🎓 Recruitment</a>
+    <a href="/trainings.html">🏋️ Trainings</a>
+    <a href="/placement.html">📌 Placement</a>
+    <a href="/index.html">🔓 Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Recruitment Form</h1>
+    <form id="recruitmentForm">
+      <div>
+        <label for="candidate">Candidate Name</label>
+        <input type="text" id="candidate" required>
+      </div>
+      <div>
+        <label for="position">Position</label>
+        <input type="text" id="position" required>
+      </div>
+      <div>
+        <label for="applicationDate">Application Date</label>
+        <input type="date" id="applicationDate" required>
+      </div>
+      <div>
+        <label for="stage">Stage</label>
+        <select id="stage">
+          <option value="Applied">Applied</option>
+          <option value="Screening">Screening</option>
+          <option value="Interview">Interview</option>
+          <option value="Final Review">Final Review</option>
+          <option value="Hired">Hired</option>
+        </select>
+      </div>
+      <div>
+        <label for="interviewDate">Interview Date</label>
+        <input type="date" id="interviewDate">
+      </div>
+      <div>
+        <label for="status">Status</label>
+        <select id="status">
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+      <div style="grid-column: span 3;">
+        <button type="submit">Submit Candidate</button>
+      </div>
+    </form>
+
+    <table id="recruitmentTable">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Position</th>
+          <th>Application Date</th>
+          <th>Stage</th>
+          <th>Interview Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById('recruitmentForm');
+    const tableBody = document.querySelector('#recruitmentTable tbody');
+
+    let editIndex = -1;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const candidate = document.getElementById('candidate').value;
+      const position = document.getElementById('position').value;
+      const applicationDate = document.getElementById('applicationDate').value;
+      const stage = document.getElementById('stage').value;
+      const interviewDate = document.getElementById('interviewDate').value;
+      const status = document.getElementById('status').value;
+
+      const entry = { candidate, position, applicationDate, stage, interviewDate, status };
+
+      let data = JSON.parse(localStorage.getItem('recruitmentData') || '[]');
+
+      if (editIndex > -1) {
+        data[editIndex] = entry;
+        editIndex = -1;
+      } else {
+        data.push(entry);
+      }
+
+      localStorage.setItem('recruitmentData', JSON.stringify(data));
+      form.reset();
+      loadTable();
+    });
+
+    function loadTable() {
+      const data = JSON.parse(localStorage.getItem('recruitmentData') || '[]');
+      tableBody.innerHTML = '';
+
+      data.forEach((entry, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.candidate}</td>
+          <td>${entry.position}</td>
+          <td>${entry.applicationDate}</td>
+          <td>${entry.stage}</td>
+          <td>${entry.interviewDate}</td>
+          <td>${entry.status}</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editEntry(${index})">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteEntry(${index})">Delete</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function editEntry(index) {
+      const data = JSON.parse(localStorage.getItem('recruitmentData') || '[]');
+      const entry = data[index];
+
+      document.getElementById('candidate').value = entry.candidate;
+      document.getElementById('position').value = entry.position;
+      document.getElementById('applicationDate').value = entry.applicationDate;
+      document.getElementById('stage').value = entry.stage;
+      document.getElementById('interviewDate').value = entry.interviewDate;
+      document.getElementById('status').value = entry.status;
+
+      editIndex = index;
+    }
+
+    function deleteEntry(index) {
+      if (confirm("Are you sure you want to delete this entry?")) {
+        let data = JSON.parse(localStorage.getItem('recruitmentData') || '[]');
+        data.splice(index, 1);
+        localStorage.setItem('recruitmentData', JSON.stringify(data));
+        loadTable();
+      }
+    }
+
+    window.onload = loadTable;
+  </script>
+
+</body>
+</html>
+>>>>>>> 901881a6848fb263508b2f2ef35e13c4981ea936

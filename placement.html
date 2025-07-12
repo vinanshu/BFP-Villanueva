@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -317,3 +318,228 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Placement - Bureau of Fire Protection</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 220px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      color: #FFD700;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      color: #FFA500;
+      margin: 0;
+      border-bottom: 2px solid #FFA500;
+      padding-bottom: 10px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #FFD700;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      background-color: #FFA500;
+      color: #000;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 30px;
+      background-color: #fff;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #FFE4B5;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .eligible {
+      color: green;
+      font-weight: bold;
+    }
+
+    .not-eligible {
+      color: red;
+      font-weight: bold;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 5px;
+    }
+
+    .btn {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .edit-btn {
+      background: #28a745;
+    }
+
+    .edit-btn:hover {
+      background: #218838;
+    }
+
+    .save-btn {
+      background: #007bff;
+    }
+
+    .save-btn:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="/promotion.html">🎖️ Promotion</a>
+    <a href="/recruitment.html">🧑‍🎓 Recruitment</a>
+    <a href="/trainings.html">🏋️ Trainings</a>
+    <a href="#" class="active">📌 Placement</a>
+    <a href="/index.html">🔓 Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Personnel Placement</h1>
+    <table id="placement-table">
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th>Rank</th>
+          <th>Current Designation</th>
+          <th>Station/Unit</th>
+          <th>Years in Designation</th>
+          <th>Last Promotion Date</th>
+          <th>Eligibility Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows will be loaded by JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function calculateYears(dateString) {
+      if (!dateString) return 0;
+      const today = new Date();
+      const fromDate = new Date(dateString);
+      const diff = today - fromDate;
+      return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+    }
+
+    function loadPlacementTable() {
+      const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
+      const tbody = document.querySelector("#placement-table tbody");
+      tbody.innerHTML = "";
+
+      personnel.forEach((person, index) => {
+        const fullName = person.fullName || "N/A";
+        const rank = person.rank || "N/A";
+        const designation = person.designation || "";
+        const station = person.station || "";
+        const dateHired = person.dateHired || "";
+        const years = calculateYears(dateHired);
+        const eligible = years >= 2;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${fullName}</td>
+          <td>${rank}</td>
+          <td id="designation-cell-${index}">${designation}</td>
+          <td id="station-cell-${index}">${station}</td>
+          <td>${years}</td>
+          <td>${dateHired}</td>
+          <td class="${eligible ? 'eligible' : 'not-eligible'}">${eligible ? 'Eligible' : 'Not Eligible'}</td>
+          <td id="action-cell-${index}">${eligible ? `<button class="btn edit-btn" onclick="editPlacement(${index})">Edit</button>` : '—'}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function editPlacement(index) {
+      const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
+      const person = personnel[index];
+
+      document.getElementById(`designation-cell-${index}`).innerHTML =
+        `<input type="text" id="designation-input-${index}" class="input-field" value="${person.designation}">`;
+
+      document.getElementById(`station-cell-${index}`).innerHTML =
+        `<input type="text" id="station-input-${index}" class="input-field" value="${person.station}">`;
+
+      document.getElementById(`action-cell-${index}`).innerHTML =
+        `<button class="btn save-btn" onclick="savePlacement(${index})">Save</button>`;
+    }
+
+    function savePlacement(index) {
+      const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
+
+      const newDesignation = document.getElementById(`designation-input-${index}`).value.trim();
+      const newStation = document.getElementById(`station-input-${index}`).value.trim();
+
+      if (!newDesignation || !newStation) {
+        alert("Please fill in both designation and station/unit.");
+        return;
+      }
+
+      personnel[index].designation = newDesignation;
+      personnel[index].station = newStation;
+
+      localStorage.setItem("personnelList", JSON.stringify(personnel));
+      loadPlacementTable(); // Refresh UI
+    }
+
+    window.onload = loadPlacementTable;
+  </script>
+
+</body>
+</html>
+>>>>>>> 901881a6848fb263508b2f2ef35e13c4981ea936

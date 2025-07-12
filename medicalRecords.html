@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -177,3 +178,85 @@
   </script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Medical Records</title>
+  <style>
+    body { font-family: 'Segoe UI'; margin: 0; background: #f5f5f5; }
+    .sidebar { width: 220px; position: fixed; top: 0; bottom: 0; background: #000; color: #FFD700; padding: 20px; }
+    .sidebar h2 { font-size: 24px; color: #FFA500; border-bottom: 2px solid #FFA500; padding-bottom: 10px; }
+    .sidebar a { display: block; color: #FFD700; text-decoration: none; margin: 10px 0; padding: 8px 12px; border-radius: 5px; }
+    .sidebar a.active, .sidebar a:hover { background: #FFA500; color: #000; }
+    .main-content { margin-left: 240px; padding: 30px; }
+    h1 { font-size: 28px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background-color: #28a745; color: white; }
+    .no-records { margin-top: 20px; color: #555; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <a href="/admin.html">📊 Dashboard</a>
+    <a href="/medicalRecords.html" class="active">🩺 Medical Records</a>
+    <a href="/awardsCommendations.html">🏅 Awards & Commendations</a>
+    <a href="/index.html">🚪 Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Medical Records</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Employee Name</th>
+          <th>Rank</th>
+          <th>Medical File</th>
+        </tr>
+      </thead>
+      <tbody id="medicalTable"></tbody>
+    </table>
+
+    <div id="noMedicalMessage" class="no-records" style="display: none;">
+      No medical records found.
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const table = document.getElementById("medicalTable");
+      const noMessage = document.getElementById("noMedicalMessage");
+      const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
+      let found = false;
+
+      personnelList.forEach(person => {
+        const fullName = person.fullName || 'Unknown';
+        const rank = person.rank || 'N/A';
+        const documents = Array.isArray(person.documents) ? person.documents : [];
+
+        documents.forEach(doc => {
+          if (doc.category === 'Medical Record' && doc.name) {
+            found = true;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${fullName}</td>
+              <td>${rank}</td>
+              <td><a href="${doc.content}" download="${doc.name}" target="_blank">${doc.name}</a></td>
+            `;
+            table.appendChild(row);
+          }
+        });
+      });
+
+      if (!found) {
+        noMessage.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
+>>>>>>> 901881a6848fb263508b2f2ef35e13c4981ea936
