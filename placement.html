@@ -239,33 +239,37 @@
     }
 
     function loadPlacementTable() {
-      const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
-      const tbody = document.querySelector("#placement-table tbody");
-      tbody.innerHTML = "";
+  const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
+  const tbody = document.querySelector("#placement-table tbody");
+  tbody.innerHTML = "";
 
-      personnel.forEach((person, index) => {
-        const fullName = person.fullName || "N/A";
-        const rank = person.rank || "N/A";
-        const designation = person.designation || "";
-        const station = person.station || "";
-        const dateHired = person.dateHired || "";
-        const years = calculateYears(dateHired);
-        const eligible = years >= 2;
+  personnel.forEach((person, index) => {
+    const firstName = person.firstName || "";
+    const middleName = person.middleName || "";
+    const lastName = person.lastName || "";
+    const fullName = `${firstName} ${middleName} ${lastName}`.trim() || "N/A";
+    const rank = person.rank || "N/A";
+    const designation = person.designation || "";
+    const station = person.station || "";
+    const dateHired = person.dateHired || "";
+    const years = calculateYears(dateHired);
+    const eligible = years >= 2;
 
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${fullName}</td>
-          <td>${rank}</td>
-          <td id="designation-cell-${index}">${designation}</td>
-          <td id="station-cell-${index}">${station}</td>
-          <td>${years}</td>
-          <td>${dateHired}</td>
-          <td class="${eligible ? 'eligible' : 'not-eligible'}">${eligible ? 'Eligible' : 'Not Eligible'}</td>
-          <td id="action-cell-${index}">${eligible ? `<button class="btn edit-btn" onclick="editPlacement(${index})">Edit</button>` : '—'}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${fullName}</td>
+      <td>${rank}</td>
+      <td id="designation-cell-${index}">${designation}</td>
+      <td id="station-cell-${index}">${station}</td>
+      <td>${years}</td>
+      <td>${dateHired}</td>
+      <td class="${eligible ? 'eligible' : 'not-eligible'}">${eligible ? 'Eligible' : 'Not Eligible'}</td>
+      <td id="action-cell-${index}">${eligible ? `<button class="btn edit-btn" onclick="editPlacement(${index})">Edit</button>` : '—'}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
 
     function editPlacement(index) {
       const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];

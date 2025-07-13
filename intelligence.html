@@ -152,6 +152,15 @@
     tr:hover {
       background-color: #f9f9f9;
     }
+    .input-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.input-row input {
+  flex: 1;
+}
+
   </style>
 </head>
 <body>
@@ -230,17 +239,23 @@
       <p>Record of Investigative Entries</p>
     </div>
 
-    <!-- Form Section -->
     <div class="form-container">
-      <input type="text" id="firstName" placeholder="First Name" required>
-      <input type="text" id="lastName" placeholder="Last Name" required>
-      <input type="text" id="badgeNumber" placeholder="Badge Number" required>
-      <input type="text" id="rank" placeholder="Rank" required>
-      <input type="date" id="date" required>
-      <input type="text" id="location" placeholder="Location" required>
-      <textarea id="objectDetails" placeholder="Object Details" rows="3" required></textarea>
-      <button onclick="addInvestigation()">Submit Entry</button>
-    </div>
+  <div class="input-row">
+    <input type="text" id="firstName" placeholder="First Name" required>
+    <input type="text" id="lastName" placeholder="Last Name" required>
+  </div>
+  <div class="input-row">
+    <input type="text" id="badgeNumber" placeholder="Badge Number" required>
+    <input type="text" id="rank" placeholder="Rank" required>
+  </div>
+  <div class="input-row">
+    <input type="date" id="date" required>
+    <input type="text" id="location" placeholder="Location" required>
+  </div>
+  <textarea id="objectDetails" placeholder="Object Details" rows="3" required></textarea>
+  <button onclick="addInvestigation()">Submit Entry</button>
+</div>
+
 
     <!-- Table Section -->
     <div class="table-container">

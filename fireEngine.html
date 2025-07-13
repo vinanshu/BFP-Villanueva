@@ -149,6 +149,18 @@
       margin-top: 0;
       color: #333;
     }
+
+    .input-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.input-row input,
+.input-row select {
+  flex: 1;
+}
+
   </style>
 </head>
 <body>
@@ -229,16 +241,21 @@
 
     <!-- Input Form -->
     <div class="form-container">
-      <input type="text" id="fullName" placeholder="Full Name" />
-      <input type="text" id="badgeNumber" placeholder="Badge Number" />
-      <input type="text" id="rank" placeholder="Rank" />
-      <select id="shift">
-        <option value="">Select Shift</option>
-        <option value="A">Shift A</option>
-        <option value="B">Shift B</option>
-      </select>
-      <button id="submitButton" onclick="addShiftEntry()">Assign to Shift</button>
-    </div>
+  <div class="input-row">
+    <input type="text" id="fullName" placeholder="Full Name" />
+    <input type="text" id="badgeNumber" placeholder="Badge Number" />
+  </div>
+  <div class="input-row">
+    <input type="text" id="rank" placeholder="Rank" />
+    <select id="shift">
+      <option value="">Select Shift</option>
+      <option value="A">Shift A</option>
+      <option value="B">Shift B</option>
+    </select>
+  </div>
+  <button id="submitButton" onclick="addShiftEntry()">Assign to Shift</button>
+</div>
+
 
     <!-- Shift A Table -->
     <div class="table-container">
@@ -347,6 +364,19 @@
     }
 
     window.onload = loadShiftEntries;
+  </script>
+  <script>
+    function toggleMenu(element) {
+      const dropdown = element.nextElementSibling;
+      const arrow = element.querySelector("span");
+      if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+        arrow.textContent = "▼";
+      } else {
+        dropdown.style.display = "block";
+        arrow.textContent = "▲";
+      }
+    }
   </script>
 </body>
 </html>

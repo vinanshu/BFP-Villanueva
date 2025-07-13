@@ -144,6 +144,16 @@
     tr:hover {
       background-color: #f9f9f9;
     }
+
+    .input-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.input-row input {
+  flex: 1;
+}
+
   </style>
 </head>
 <body>
@@ -216,40 +226,56 @@
   </div>
 
   <!-- Main Content -->
-  <div class="main-content">
-    <div class="header">
-      <h1>📡 Commel - Communications & Electronics</h1>
-      <p>Record of Commel Equipment Maintenance and Reports</p>
-    </div>
-
-    <!-- Form to Add Entry -->
-    <div class="form-container">
-      <input type="text" id="officer" placeholder="Officer In Charge" required />
-      <input type="date" id="date" required />
-      <input type="text" id="equipment" placeholder="Equipment Name" required />
-      <input type="text" id="status" placeholder="Status (Working, Faulty, etc.)" required />
-      <textarea id="remarks" placeholder="Remarks / Action Taken" rows="3"></textarea>
-      <button onclick="addCommelEntry()">Submit Report</button>
-    </div>
-
-    <!-- Table Display -->
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Officer</th>
-            <th>Date</th>
-            <th>Equipment</th>
-            <th>Status</th>
-            <th>Remarks</th>
-          </tr>
-        </thead>
-        <tbody id="commelTableBody">
-          <!-- Dynamic rows go here -->
-        </tbody>
-      </table>
-    </div>
+<div class="main-content">
+  <div class="header">
+    <h1>📡 Commel - Communications & Electronics</h1>
   </div>
+
+  <div class="form-container">
+  <h3 style="color: #FFA500; margin-bottom: 10px;">📝 Submit New Maintenance Report</h3>
+  <p style="font-size: 14px; color: #444;">
+    Use the form below to record details of equipment inspections, repairs, or status updates.
+  </p>
+
+  <div class="input-row">
+    <input type="text" id="officer" placeholder="Officer In Charge" required />
+    <input type="date" id="date" required />
+  </div>
+
+  <div class="input-row">
+    <input type="text" id="equipment" placeholder="Equipment Name" required />
+    <input type="text" id="status" placeholder="Status (e.g., Working, Faulty)" required />
+  </div>
+
+  <textarea id="remarks" placeholder="Remarks / Action Taken" rows="3"></textarea>
+
+  <button onclick="addCommelEntry()">Submit Report</button>
+</div>
+
+
+  <!-- Table Display -->
+  <div class="table-container">
+    <h3 style="color: #FFA500; margin-bottom: 10px;">📋 Equipment Maintenance Records</h3>
+    <p style="font-size: 14px; color: #444;">
+      Below is the list of previously recorded equipment reports. These records help track equipment reliability, usage frequency, and the effectiveness of corrective actions.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Officer</th>
+          <th>Date</th>
+          <th>Equipment</th>
+          <th>Status</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody id="commelTableBody">
+        <!-- Dynamic rows go here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
   <script>
     function loadCommelEntries() {

@@ -144,6 +144,17 @@
     tr:hover {
       background-color: #f9f9f9;
     }
+
+    .input-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.input-row input,
+.input-row textarea {
+  flex: 1;
+}
+
   </style>
 </head>
 <body>
@@ -224,14 +235,21 @@
 
     <!-- Input Form -->
     <div class="form-container">
-      <input type="text" id="responder" placeholder="Responder Name" />
-      <input type="date" id="date" />
-      <input type="text" id="rescueType" placeholder="Type of Rescue (e.g., Flood, Fire, Vehicle Accident)" />
-      <input type="text" id="location" placeholder="Location of Operation" />
-      <input type="text" id="status" placeholder="Status (Completed, Ongoing)" />
-      <textarea id="remarks" placeholder="Additional Remarks" rows="2"></textarea>
-      <button onclick="addRescueEntry()">Submit Rescue</button>
-    </div>
+  <div class="input-row">
+    <input type="text" id="responder" placeholder="Responder Name" />
+    <input type="date" id="date" />
+  </div>
+  <div class="input-row">
+    <input type="text" id="rescueType" placeholder="Type of Rescue (e.g., Flood, Fire, Vehicle Accident)" />
+    <input type="text" id="location" placeholder="Location of Operation" />
+  </div>
+  <div class="input-row">
+    <input type="text" id="status" placeholder="Status (Completed, Ongoing)" />
+    <textarea id="remarks" placeholder="Additional Remarks" rows="3"></textarea>
+  </div>
+  <button onclick="addRescueEntry()">Submit Rescue</button>
+</div>
+
 
     <!-- Table -->
     <div class="table-container">

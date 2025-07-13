@@ -78,14 +78,13 @@
     }
 
     .main-content {
-  margin-left: 300px;
-  padding: 40px 20px;
-  width: calc(100% - 240px);
-  min-height: 100vh;
-  box-sizing: border-box;
-  overflow-x: auto;
-}
-
+      margin-left: 300px;
+      padding: 40px 20px;
+      width: calc(100% - 240px);
+      min-height: 100vh;
+      box-sizing: border-box;
+      overflow-x: auto;
+    }
 
     h1 {
       text-align: center;
@@ -185,7 +184,6 @@
 </head>
 
 <body>
-
   <div class="sidebar">
     <h2>Admin</h2>
     <a href="admin.html" style="display: flex; align-items: center; margin-bottom: 20px;">
@@ -199,17 +197,19 @@
     <a href="/clearanceSystem.html">✅ Clearance System</a>
     <a href="/personnelRegister.html">👥 Personnel Register</a>
 
+    <!-- Personnel Records -->
     <div class="dropdown-section" style="background-color: green; border-radius: 20px;">
       <div class="dropdown-toggle" onclick="toggleMenu(this)">
         👥 Personnel Records <span>▼</span>
       </div>
-      <div class="dropdown-content">
+      <div class="dropdown-content" >
         <a href="/personnelProfile.html" class="active">📁 Personnel Profile (201 Files)</a>
-        <a href="leaveRecords.html">📑 Leave Records</a>
+        <a href="/leaveRecords.html">📑 Leave Records</a>
         <a href="/ClearanceRecords.html">📋 Clearance Records</a>
       </div>
     </div>
 
+    <!-- Morale & Welfare -->
     <div class="dropdown-section">
       <div class="dropdown-toggle" onclick="toggleMenu(this)">
         ❤️ Morale & Welfare <span>▼</span>
@@ -220,6 +220,7 @@
       </div>
     </div>
 
+    <!-- HR Management -->
     <div class="dropdown-section">
       <div class="dropdown-toggle" onclick="toggleMenu(this)">
         👨‍💼 HR Management <span>▼</span>
@@ -232,6 +233,7 @@
       </div>
     </div>
 
+    <!-- Operation Dropdown -->
     <div class="dropdown-section">
       <div class="dropdown-toggle" onclick="toggleMenu(this)">
         🚒 Operation <span>▼</span>
@@ -271,7 +273,7 @@
     </table>
   </div>
 
- <script>
+  <script>
     const personnelList = JSON.parse(localStorage.getItem('personnelList')) || [];
     const pendingUploads = {};
 
@@ -281,7 +283,6 @@
 
       personnelList.forEach((p, index) => {
         const row = document.createElement('tr');
-
         row.innerHTML = `
           <td><img src="${p.photo || 'https://via.placeholder.com/60'}" /></td>
           <td><input type="text" value="${p.firstName || ''}" data-field="firstName" data-index="${index}" disabled></td>
@@ -317,9 +318,7 @@
     function toggleEdit(index, btn) {
       const inputs = document.querySelectorAll(`[data-index="${index}"]`);
       const isDisabled = inputs[0].disabled;
-
       inputs.forEach(input => input.disabled = !isDisabled);
-
       if (isDisabled) {
         btn.textContent = "Save";
         btn.className = "btn save-btn";
@@ -343,21 +342,16 @@
     function prepareUpload(event, index) {
       const files = Array.from(event.target.files);
       const category = document.getElementById(`doc-category-${index}`).value;
-
       if (!pendingUploads[index]) pendingUploads[index] = [];
       files.forEach(file => {
         pendingUploads[index].push({ file, category });
       });
-
       alert(`${files.length} file(s) ready to be saved.`);
     }
 
     function saveUploadedFiles(index) {
       const uploads = pendingUploads[index];
-      if (!uploads || uploads.length === 0) {
-        alert("No files to save.");
-        return;
-      }
+      if (!uploads || uploads.length === 0) return alert("No files to save.");
 
       const processNext = () => {
         const item = uploads.shift();
@@ -367,15 +361,12 @@
             name: item.file.name,
             content: e.target.result,
             category: item.category,
-            timestamp: new Date().toISOString()
+            uploadedAt: new Date().toLocaleString()
           };
-          if (!personnelList[index].documents) {
-            personnelList[index].documents = [];
-          }
+          if (!personnelList[index].documents) personnelList[index].documents = [];
           personnelList[index].documents.push(doc);
-          if (uploads.length > 0) {
-            processNext();
-          } else {
+          if (uploads.length > 0) processNext();
+          else {
             localStorage.setItem('personnelList', JSON.stringify(personnelList));
             document.getElementById(`doc-list-${index}`).innerHTML = renderDocumentList(personnelList[index].documents, index);
             alert("Files saved successfully.");
@@ -394,7 +385,7 @@
       return documents.map((d, docIndex) => `
         <div>
           📎 <strong>[${d.category}]</strong> <a href="${d.content}" download="${d.name}" target="_blank">${d.name}</a>
-          <small style="color: gray;"> (${new Date(d.timestamp).toLocaleString() || 'N/A'})</small>
+          <small style="color: gray;"> (${d.uploadedAt})</small>
           <button class="remove-btn" onclick="removeDocument(${index}, ${docIndex})">❌</button>
         </div>
       `).join('');
@@ -423,5 +414,4 @@
     renderTable();
   </script>
 </body>
-
 </html>

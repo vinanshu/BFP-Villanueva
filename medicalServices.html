@@ -144,6 +144,17 @@
     tr:hover {
       background-color: #f9f9f9;
     }
+
+    .input-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.input-row input,
+.input-row textarea {
+  flex: 1;
+}
+
   </style>
 </head>
 <body>
@@ -222,16 +233,22 @@
       <p>Medical Assistance & Case Records</p>
     </div>
 
-    <!-- Input Form -->
     <div class="form-container">
-      <input type="text" id="name" placeholder="Personnel or Civilian Name" required />
-      <input type="date" id="date" />
-      <input type="text" id="caseType" placeholder="Case Type (e.g., Injury, Burn, Checkup)" required />
-      <input type="text" id="condition" placeholder="Condition (Stable, Critical, etc.)" />
-      <textarea id="treatment" placeholder="Treatment Given" rows="3"></textarea>
-      <textarea id="remarks" placeholder="Additional Remarks" rows="2"></textarea>
-      <button onclick="addMedicalEntry()">Submit Case</button>
-    </div>
+  <div class="input-row">
+    <input type="text" id="name" placeholder="Personnel or Civilian Name" required />
+    <input type="date" id="date" required />
+  </div>
+  <div class="input-row">
+    <input type="text" id="caseType" placeholder="Case Type (e.g., Injury, Burn, Checkup)" required />
+    <input type="text" id="condition" placeholder="Condition (Stable, Critical, etc.)" />
+  </div>
+  <div class="input-row">
+    <textarea id="treatment" placeholder="Treatment Given" rows="3"></textarea>
+    <textarea id="remarks" placeholder="Additional Remarks" rows="3"></textarea>
+  </div>
+  <button onclick="addMedicalEntry()">Submit Case</button>
+</div>
+
 
     <!-- Table Records -->
     <div class="table-container">

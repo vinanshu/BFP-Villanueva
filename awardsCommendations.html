@@ -195,44 +195,42 @@
     </div>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const table = document.getElementById("awardsTable");
-      const noMessage = document.getElementById("noAwardsMessage");
-      const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
-      let found = false;
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const table = document.getElementById("awardsTable");
+    const noMessage = document.getElementById("noAwardsMessage");
+    const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
+    let found = false;
 
-      personnelList.forEach(person => {
-        const firstName = person.firstName || '';
-        const middleName = person.middleName || '';
-        const lastName = person.lastName || '';
-        const badgeNumber = person.badgeNumber || 'N/A';
-        const fullName = `${lastName}, ${firstName} ${middleName}`.trim();
-        const rank = person.rank || 'N/A';
-        const documents = Array.isArray(person.documents) ? person.documents : [];
+    personnelList.forEach(person => {
+      const fullName = `${person.firstName || ''} ${person.middleName || ''} ${person.lastName || ''}`.trim();
+      const rank = person.rank || 'N/A';
+      const badge = person.badgeNumber || 'N/A';
+      const documents = Array.isArray(person.documents) ? person.documents : [];
 
-        documents.forEach(doc => {
-          if (doc.category === 'Award/Commendation' && doc.name && doc.content) {
-            found = true;
-            const timestamp = doc.timestamp ? new Date(doc.timestamp).toLocaleString() : 'N/A';
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${fullName}</td>
-              <td>${rank}</td>
-              <td>${badgeNumber}</td>
-              <td><a href="${doc.content}" download="${doc.name}" target="_blank">${doc.name}</a></td>
-              <td>${timestamp}</td>
-            `;
-            table.appendChild(row);
-          }
-        });
+      documents.forEach(doc => {
+        if (doc.category === 'Award/Commendation' && doc.name) {
+          found = true;
+          const dateTime = doc.uploadedAt || new Date().toLocaleString(); // fallback if missing
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${fullName}</td>
+            <td>${rank}</td>
+            <td>${badge}</td>
+            <td><a href="${doc.content}" download="${doc.name}" target="_blank">${doc.name}</a></td>
+            <td>${dateTime}</td>
+          `;
+          table.appendChild(row);
+        }
       });
-
-      if (!found) {
-        noMessage.style.display = "block";
-      }
     });
-  </script>
+
+    if (!found) {
+      noMessage.style.display = "block";
+    }
+  });
+</script>
+
 
   <script>
     function toggleMenu(element) {
