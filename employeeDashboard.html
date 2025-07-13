@@ -340,17 +340,18 @@
     <a href="/index.html" tabindex="0">🚪 Logout</a>
   </nav>
 
-  <!-- Main Content -->
+   <!-- Main Content -->
   <main class="main-content" role="main" tabindex="-1">
     <div class="dashboard-header">
       <h1>Employee Dashboard</h1>
     </div>
-    
+
     <div class="welcome-message" id="welcomeMessage">
       Loading your leave information...
     </div>
-    
+
     <div class="dashboard-stats">
+      <!-- Vacation Leave Card -->
       <div class="stat-card">
         <h3>Vacation Leave</h3>
         <div class="stat-value" id="vacation-value">0</div>
@@ -359,7 +360,7 @@
           <div class="progress-bar" id="vacation-progress" style="width: 0%"></div>
         </div>
       </div>
-      
+      <!-- Sick Leave Card -->
       <div class="stat-card">
         <h3>Sick Leave</h3>
         <div class="stat-value" id="sick-value">0</div>
@@ -368,7 +369,7 @@
           <div class="progress-bar" id="sick-progress" style="width: 0%"></div>
         </div>
       </div>
-      
+      <!-- Emergency Leave Card -->
       <div class="stat-card">
         <h3>Emergency Leave</h3>
         <div class="stat-value" id="emergency-value">0</div>
@@ -401,121 +402,85 @@
   </main>
 
   <script>
-    // Function to format date for display
     function formatDisplayDate(dateString) {
       const options = { year: 'numeric', month: 'short', day: 'numeric' };
       return new Date(dateString).toLocaleDateString('en-US', options);
     }
-    
-    // Function to calculate days between dates
+
     function calculateDays(start, end) {
       const startDate = new Date(start);
       const endDate = new Date(end);
       const diffTime = Math.abs(endDate - startDate);
-      return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Add 1 to include both start and end dates
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     }
-    
-    // Function to get leave data for current user
+
     function getLeaveData() {
       const currentUser = localStorage.getItem('currentUser');
       const leaveRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
-      
-      // Filter leave requests for current user
-      const userRequests = leaveRequests.filter(request => request.username === currentUser);
-      
-      // Initialize leave counters
+
+      const userRequests = leaveRequests.filter(r => r.username === currentUser);
+
       const leaveCounts = {
         vacation: { used: 0, max: 15 },
         sick: { used: 0, max: 10 },
         emergency: { used: 0, max: 5 }
       };
-      
-      // Calculate used leave days (only for approved requests)
-      userRequests.forEach(request => {
-        if (request.status === 'Approved') {
-          const days = parseInt(request.numDays) || calculateDays(request.startDate, request.endDate);
-          
-          if (request.leaveType === 'Vacation') {
-            leaveCounts.vacation.used += days;
-          } else if (request.leaveType === 'Sick') {
-            leaveCounts.sick.used += days;
-          } else if (request.leaveType === 'Emergency') {
-            leaveCounts.emergency.used += days;
-          }
+
+      userRequests.forEach(req => {
+        if (req.status === 'Approved') {
+          const days = parseInt(req.numDays) || calculateDays(req.startDate, req.endDate);
+          if (req.leaveType === 'Vacation') leaveCounts.vacation.used += days;
+          else if (req.leaveType === 'Sick') leaveCounts.sick.used += days;
+          else if (req.leaveType === 'Emergency') leaveCounts.emergency.used += days;
         }
       });
-      
+
       return {
         leaveCounts,
         userRequests: userRequests.sort((a, b) => new Date(b.dateOfFiling) - new Date(a.dateOfFiling))
       };
     }
-    
-    // Function to update leave stats on dashboard
+
     function updateLeaveStats() {
-      const leaveData = getLeaveData();
-      const { leaveCounts, userRequests } = leaveData;
-      
-      // Update welcome message with employee name
+      const { leaveCounts, userRequests } = getLeaveData();
+
       const personnel = JSON.parse(localStorage.getItem('personnelList')) || [];
       const currentUser = localStorage.getItem('currentUser');
       const employee = personnel.find(p => p.username === currentUser);
       const welcomeMessage = document.getElementById('welcomeMessage');
-      
+
       if (employee) {
-        welcomeMessage.innerHTML = `Welcome back, <strong>${employee.fullName}</strong>! Here's your leave summary.`;
+        const fullName = `${employee.firstName} ${employee.middleName} ${employee.lastName}`;
+        welcomeMessage.innerHTML = `Welcome back, <strong>${fullName}</strong>! Here's your leave summary.`;
       } else {
         welcomeMessage.innerHTML = 'Welcome to your dashboard! Here is your leave summary.';
       }
-      
-      // Update vacation leave stats
-      document.getElementById('vacation-value').textContent = leaveCounts.vacation.used;
-      document.getElementById('vacation-label').textContent = 
-        `Days Used / ${leaveCounts.vacation.max} Total`;
-      
-      const vacationPercentage = Math.min(100, (leaveCounts.vacation.used / leaveCounts.vacation.max) * 100);
-      document.getElementById('vacation-progress').style.width = `${vacationPercentage}%`;
-      
-      // Update sick leave stats
-      document.getElementById('sick-value').textContent = leaveCounts.sick.used;
-      document.getElementById('sick-label').textContent = 
-        `Days Used / ${leaveCounts.sick.max} Total`;
-      
-      const sickPercentage = Math.min(100, (leaveCounts.sick.used / leaveCounts.sick.max) * 100);
-      document.getElementById('sick-progress').style.width = `${sickPercentage}%`;
-      
-      // Update emergency leave stats
-      document.getElementById('emergency-value').textContent = leaveCounts.emergency.used;
-      document.getElementById('emergency-label').textContent = 
-        `Days Used / ${leaveCounts.emergency.max} Total`;
-      
-      const emergencyPercentage = Math.min(100, (leaveCounts.emergency.used / leaveCounts.emergency.max) * 100);
-      document.getElementById('emergency-progress').style.width = `${emergencyPercentage}%`;
-      
-      // Update recent leave requests table
+
+      const setStat = (type, count) => {
+        document.getElementById(`${type}-value`).textContent = count.used;
+        document.getElementById(`${type}-label`).textContent = `Days Used / ${count.max} Total`;
+        const percent = Math.min(100, (count.used / count.max) * 100);
+        document.getElementById(`${type}-progress`).style.width = `${percent}%`;
+      };
+
+      setStat('vacation', leaveCounts.vacation);
+      setStat('sick', leaveCounts.sick);
+      setStat('emergency', leaveCounts.emergency);
+
       const tableBody = document.getElementById('leave-requests-body');
       tableBody.innerHTML = '';
-      
+
       if (userRequests.length === 0) {
-        tableBody.innerHTML = `
-          <tr>
-            <td colspan="5" style="text-align: center;">No leave requests found</td>
-          </tr>
-        `;
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No leave requests found</td></tr>`;
         return;
       }
-      
-      // Show only the 3 most recent requests
-      const recentRequests = userRequests.slice(0, 3);
-      
-      recentRequests.forEach(request => {
+
+      userRequests.slice(0, 3).forEach(request => {
         const row = document.createElement('tr');
-        
-        // Determine status class
         let statusClass = 'status-pending';
         if (request.status === 'Approved') statusClass = 'status-approved';
         if (request.status === 'Rejected') statusClass = 'status-rejected';
-        
+
         row.innerHTML = `
           <td>${request.leaveType}</td>
           <td>${formatDisplayDate(request.startDate)}</td>
@@ -523,27 +488,20 @@
           <td>${request.numDays}</td>
           <td class="${statusClass}">${request.status}</td>
         `;
-        
+
         tableBody.appendChild(row);
       });
     }
-    
-    // Initialize dashboard when page loads
+
     document.addEventListener('DOMContentLoaded', () => {
-      // Check if user is logged in
       const currentUser = localStorage.getItem('currentUser');
       if (!currentUser) {
         window.location.href = '/index.html';
         return;
       }
-      
       updateLeaveStats();
-      
-      // Listen for storage events to update when leave requests change
-      window.addEventListener('storage', (event) => {
-        if (event.key === 'leaveRequests') {
-          updateLeaveStats();
-        }
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'leaveRequests') updateLeaveStats();
       });
     });
   </script>

@@ -285,9 +285,10 @@
       bTable.innerHTML = "";
 
       entries.forEach((entry, index) => {
+        const fullName = [entry.firstName, entry.middleName, entry.lastName].filter(Boolean).join(" ");
         const row = `
           <tr>
-            <td>${entry.fullName}</td>
+            <td>${fullName}</td>
             <td>${entry.badgeNumber}</td>
             <td>${entry.rank}</td>
             <td><button onclick="editEntry(${index})">✏️ Edit</button></td>
@@ -313,14 +314,19 @@
         return;
       }
 
+      const nameParts = fullName.split(" ");
+      const firstName = nameParts[0] || "";
+      const middleName = nameParts.length === 3 ? nameParts[1] : "";
+      const lastName = nameParts[nameParts.length - 1] || "";
+
       let entries = JSON.parse(localStorage.getItem("fireShiftEntries")) || [];
 
       if (editIndex !== null) {
-        entries[editIndex] = { fullName, badgeNumber, rank, shift };
+        entries[editIndex] = { firstName, middleName, lastName, badgeNumber, rank, shift };
         editIndex = null;
         submitButton.textContent = "Assign to Shift";
       } else {
-        entries.push({ fullName, badgeNumber, rank, shift });
+        entries.push({ firstName, middleName, lastName, badgeNumber, rank, shift });
       }
 
       localStorage.setItem("fireShiftEntries", JSON.stringify(entries));
@@ -332,7 +338,7 @@
     function editEntry(index) {
       const entries = JSON.parse(localStorage.getItem("fireShiftEntries")) || [];
       const entry = entries[index];
-      document.getElementById("fullName").value = entry.fullName;
+      document.getElementById("fullName").value = [entry.firstName, entry.middleName, entry.lastName].filter(Boolean).join(" ");
       document.getElementById("badgeNumber").value = entry.badgeNumber;
       document.getElementById("rank").value = entry.rank;
       document.getElementById("shift").value = entry.shift;
@@ -341,19 +347,6 @@
     }
 
     window.onload = loadShiftEntries;
-  </script>
-  <script>
-    function toggleMenu(element) {
-      const dropdown = element.nextElementSibling;
-      const arrow = element.querySelector("span");
-      if (dropdown.style.display === "block") {
-        dropdown.style.display = "none";
-        arrow.textContent = "▼";
-      } else {
-        dropdown.style.display = "block";
-        arrow.textContent = "▲";
-      }
-    }
   </script>
 </body>
 </html>

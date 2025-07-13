@@ -187,16 +187,19 @@
 }
 
 .form-row {
-  margin-bottom: 15px; /* add spacing between rows */
+  margin-bottom: 15px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
 }
 
-.form-row label {
-  margin-bottom: 5px;
-  font-weight: 600;
-  color: #FFA500;
-}
 
 .form-row input,
 .form-row select,
@@ -322,21 +325,17 @@ button.delete:hover {
 
   <div class="sidebar">
     <h2>Admin</h2>
-   <a href="admin.html" style="display: flex; align-items: center; margin-bottom: 20px;">
-      <img src="logo-bfp.jpg" alt="Logo"
-        style="height: 30px; width: 30px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
+    <a href="admin.html" style="display: flex; align-items: center; margin-bottom: 20px;">
+      <img src="logo-bfp.jpg" alt="Logo" style="height: 30px; width: 30px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
       <span style="color: #FFD700; font-weight: bold;">Villanueva FireStation</span>
     </a>
-    <a href="/leaveManagement.html" >📝 Leave Management</a>
+    <a href="/leaveManagement.html">📝 Leave Management</a>
     <a href="/inventoryControl.html" class="active">📦 Inventory Control</a>
     <a href="/clearanceSystem.html">✅ Clearance System</a>
     <a href="/personnelRegister.html">👥 Personnel Register</a>
 
-    <!-- Sidebar Dropdowns -->
     <div class="dropdown-section">
-      <div class="dropdown-toggle" onclick="toggleMenu(this)">
-        👥 Personnel Records <span>▼</span>
-      </div>
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">👥 Personnel Records <span>▼</span></div>
       <div class="dropdown-content">
         <a href="/PersonnelRecords.html">📁 Personnel Profile (201 Files)</a>
         <a href="#">📑 Leave Records</a>
@@ -345,9 +344,7 @@ button.delete:hover {
     </div>
 
     <div class="dropdown-section">
-      <div class="dropdown-toggle" onclick="toggleMenu(this)">
-        ❤️ Morale & Welfare <span>▼</span>
-      </div>
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">❤️ Morale & Welfare <span>▼</span></div>
       <div class="dropdown-content">
         <a href="#">🩺 Medical Records of Employees</a>
         <a href="#">🏅 Awards & Commendations</a>
@@ -355,9 +352,7 @@ button.delete:hover {
     </div>
 
     <div class="dropdown-section">
-      <div class="dropdown-toggle" onclick="toggleMenu(this)">
-        👨‍💼 HR Management <span>▼</span>
-      </div>
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">👨‍💼 HR Management <span>▼</span></div>
       <div class="dropdown-content">
         <a href="#">📈 Qualified for Promotion</a>
         <a href="#">👥 Recruited Personnel</a>
@@ -366,11 +361,8 @@ button.delete:hover {
       </div>
     </div>
 
-    <!-- Operation Dropdown -->
     <div class="dropdown-section">
-      <div class="dropdown-toggle" onclick="toggleMenu(this)">
-        🚒 Operation <span>▼</span>
-      </div>
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">🚒 Operation <span>▼</span></div>
       <div class="dropdown-content">
         <a href="/commel.html">📡 Commel</a>
         <a href="/intelligence.html">🕵️ Intelligence and Investigation</a>
@@ -402,48 +394,57 @@ button.delete:hover {
     <div class="add-equipment">
       <h2>Add New Equipment</h2>
       <form id="equipment-form">
-        <div class="form-row">
-          <label for="equip-name">Equipment Name</label>
-          <input type="text" id="equip-name" placeholder="Enter equipment name" required />
-        </div>
-        <div class="form-row">
-          <label for="equip-code">Barcode/Item Code</label>
-          <input type="text" id="equip-code" placeholder="Enter barcode or item code" required />
-        </div>
-        <div class="form-row">
-          <label for="category">Category</label>
-          <select id="category" required>
-            <option value="" disabled selected>Select category</option>
-            <option>Firefighting Equipment</option>
-            <option>Protective Gear</option>
-            <option>Vehicle Equipment</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label for="status">Status</label>
-          <select id="status" required>
-            <option value="" disabled selected>Select status</option>
-            <option>Good</option>
-            <option>Needs Maintenance</option>
-            <option>Damaged</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label for="assigned-to">Assigned To</label>
-          <select id="assigned-to" required>
-            <option value="Not Assigned" selected>Not Assigned</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label for="purchase-date">Purchase Date</label>
-          <input type="date" id="purchase-date" placeholder="Select purchase date" required />
-        </div>
-        <div class="form-actions">
-          <button type="reset" class="cancel">Cancel</button>
-          <button type="submit" class="submit">Add Equipment</button>
-        </div>
-      </form>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="equip-name">Equipment Name</label>
+      <input type="text" id="equip-name" placeholder="Enter equipment name" required />
+    </div>
+    <div class="form-group">
+      <label for="equip-code">Barcode/Item Code</label>
+      <input type="text" id="equip-code" placeholder="Enter barcode or item code" required />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" required>
+        <option value="" disabled selected>Select category</option>
+        <option>Firefighting Equipment</option>
+        <option>Protective Gear</option>
+        <option>Vehicle Equipment</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="status">Status</label>
+      <select id="status" required>
+        <option value="" disabled selected>Select status</option>
+        <option>Good</option>
+        <option>Needs Maintenance</option>
+        <option>Damaged</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="assigned-to">Assigned To</label>
+      <select id="assigned-to" required>
+        <option value="Not Assigned" selected>Not Assigned</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="purchase-date">Purchase Date</label>
+      <input type="date" id="purchase-date" required />
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="reset" class="cancel">Cancel</button>
+    <button type="submit" class="submit">Add Equipment</button>
+  </div>
+</form>
+
     </div>
 
     <div class="inventory-table-container">
@@ -465,32 +466,30 @@ button.delete:hover {
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Inventory items go here -->
-        </tbody>
+        <tbody></tbody>
       </table>
     </div>
 
   </main>
 
 <script>
-  // Function to load personnel for "Assigned To" dropdown from personnelRegister localStorage
   function loadPersonnel() {
-    const assignedToSelect = document.getElementById("assigned-to");
-    assignedToSelect.innerHTML = '<option value="Not Assigned" selected>Not Assigned</option>';
+  const assignedToSelect = document.getElementById("assigned-to");
+  assignedToSelect.innerHTML = '<option value="Not Assigned" selected>Not Assigned</option>';
 
-    // FIXED: Changed key from "personnel" to "personnelList"
-    const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
-    
-    personnel.forEach(person => {
-      const option = document.createElement("option");
-      option.value = person.fullName;
-      option.textContent = person.fullName;
-      assignedToSelect.appendChild(option);
-    });
-  }
+  const personnel = JSON.parse(localStorage.getItem("personnelList")) || [];
 
-  // Function to load inventory from localStorage and render table
+  personnel.forEach(person => {
+    // Correct property names: firstName, middleName, lastName
+    const fullName = `${person.firstName || ""} ${person.middleName || ""} ${person.lastName || ""}`.replace(/\s+/g, ' ').trim();
+    const option = document.createElement("option");
+    option.value = fullName;
+    option.textContent = fullName;
+    assignedToSelect.appendChild(option);
+  });
+}
+
+
   function loadInventory() {
     const inventory = JSON.parse(localStorage.getItem("inventory")) || [];
     const tbody = document.querySelector("#inventory-table tbody");
@@ -498,7 +497,6 @@ button.delete:hover {
 
     inventory.forEach(item => {
       const tr = document.createElement("tr");
-
       tr.innerHTML = `
         <td>${item.name}</td>
         <td>${item.itemCode}</td>
@@ -509,20 +507,16 @@ button.delete:hover {
         <td>${item.lastChecked}</td>
         <td><button class="delete" aria-label="Delete ${item.name}">Delete</button></td>
       `;
-
       tr.querySelector(".delete").addEventListener("click", () => {
         if (confirm(`Are you sure you want to delete "${item.name}"?`)) {
           deleteInventoryItem(item.itemCode);
         }
       });
-
       tbody.appendChild(tr);
     });
-
     updateSummaryCounts();
   }
 
-  // Function to delete inventory item by itemCode
   function deleteInventoryItem(itemCode) {
     let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
     inventory = inventory.filter(item => item.itemCode !== itemCode);
@@ -530,10 +524,8 @@ button.delete:hover {
     loadInventory();
   }
 
-  // Update summary card counts
   function updateSummaryCounts() {
     const inventory = JSON.parse(localStorage.getItem("inventory")) || [];
-
     const totalCount = inventory.length;
     const assignedCount = inventory.filter(item => item.assignedTo && item.assignedTo !== "Not Assigned").length;
     const storageCount = inventory.filter(item => item.assignedTo === "Not Assigned").length;
@@ -545,25 +537,17 @@ button.delete:hover {
     document.getElementById("maintenance-count").textContent = maintenanceCount;
   }
 
-  // Filter inventory table based on search input
   document.getElementById("search").addEventListener("input", function () {
     const query = this.value.toLowerCase();
     const rows = document.querySelectorAll("#inventory-table tbody tr");
-
     rows.forEach(row => {
       const name = row.cells[0].textContent.toLowerCase();
       const code = row.cells[1].textContent.toLowerCase();
       const assignedTo = row.cells[4].textContent.toLowerCase();
-
-      if (name.includes(query) || code.includes(query) || assignedTo.includes(query)) {
-        row.style.display = "";
-      } else {
-        row.style.display = "none";
-      }
+      row.style.display = (name.includes(query) || code.includes(query) || assignedTo.includes(query)) ? "" : "none";
     });
   });
 
-  // Handle form submission to add new equipment
   document.getElementById("equipment-form").addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -580,8 +564,6 @@ button.delete:hover {
     }
 
     let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
-
-    // Check for duplicate itemCode
     if (inventory.some(item => item.itemCode === itemCode)) {
       alert("An item with this barcode/item code already exists.");
       return;
@@ -603,24 +585,15 @@ button.delete:hover {
     this.reset();
   });
 
-  // Barcode input listener: auto-fill search for barcode
   document.getElementById("barcode").addEventListener("input", function () {
     const val = this.value.trim();
-    if (val === "") {
-      // reset search
-      document.getElementById("search").value = "";
-      document.getElementById("search").dispatchEvent(new Event("input"));
-      return;
-    }
     document.getElementById("search").value = val;
     document.getElementById("search").dispatchEvent(new Event("input"));
   });
 
-  // Initial load
   loadPersonnel();
   loadInventory();
-  
-  // Listen for storage changes to update personnel list
+
   window.addEventListener("storage", function(event) {
     if (event.key === "personnelList") {
       loadPersonnel();
@@ -629,17 +602,12 @@ button.delete:hover {
 </script>
 
 <script>
-    function toggleMenu(element) {
-      const dropdown = element.nextElementSibling;
-      const arrow = element.querySelector("span");
-      if (dropdown.style.display === "block") {
-        dropdown.style.display = "none";
-        arrow.textContent = "▼";
-      } else {
-        dropdown.style.display = "block";
-        arrow.textContent = "▲";
-      }
-    }
-  </script>
+  function toggleMenu(element) {
+    const dropdown = element.nextElementSibling;
+    const arrow = element.querySelector("span");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    arrow.textContent = dropdown.style.display === "block" ? "▲" : "▼";
+  }
+</script>
 
 </body>

@@ -188,15 +188,25 @@
 
 /* Form labels and inputs */
 .form-row {
-  margin-bottom: 15px;
-}
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
 
-label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #555;
-}
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #555;
+    }
 
 select {
   width: 100%;
@@ -252,8 +262,8 @@ button.cancel:hover {
       </div>
       <div class="dropdown-content">
         <a href="/PersonnelRecords.html">📁 Personnel Profile (201 Files)</a>
-        <a href="#">📑 Leave Records</a>
-        <a href="#">📋 Clearance Records</a>
+        <a href="/leaveRecords.html">📑 Leave Records</a>
+        <a href="/ClearanceRecords.html">📋 Clearance Records</a>
       </div>
     </div>
 
@@ -262,8 +272,8 @@ button.cancel:hover {
         ❤️ Morale & Welfare <span>▼</span>
       </div>
       <div class="dropdown-content">
-        <a href="#">🩺 Medical Records of Employees</a>
-        <a href="#">🏅 Awards & Commendations</a>
+        <a href="/medicalRecords.html">🩺 Medical Records of Employees</a>
+        <a href="/awardsCommendations.html">🏅 Awards & Commendations</a>
       </div>
     </div>
 
@@ -272,10 +282,10 @@ button.cancel:hover {
         👨‍💼 HR Management <span>▼</span>
       </div>
       <div class="dropdown-content">
-        <a href="#">📈 Qualified for Promotion</a>
-        <a href="#">👥 Recruited Personnel</a>
-        <a href="#">🎓 Trainings</a>
-        <a href="#">📍 Placement (≥ 2 Years)</a>
+        <a href="/promotion.html">📈 Qualified for Promotion</a>
+        <a href="/recruitment.html">👥 Recruited Personnel</a>
+        <a href="/trainings.html">🎓 Trainings</a>
+        <a href="/placement.html">📍 Placement (≥ 2 Years)</a>
       </div>
     </div>
 
@@ -303,24 +313,22 @@ button.cancel:hover {
       <h2>Initiate Clearance</h2>
       <form id="clearance-form">
         <div class="form-row">
-          <label for="employee">Employee</label>
-          <select id="employee" required>
-            <option value="" disabled selected>Select Employee</option>
-          </select>
+          <div class="form-group">
+            <label for="employee">Employee</label>
+            <select id="employee" required></select>
+          </div>
+          <div class="form-group">
+            <label for="clearance-type">Clearance Type</label>
+            <select id="clearance-type" required>
+              <option value="" disabled selected>Select Type</option>
+              <option>Resignation</option>
+              <option>Retirement</option>
+            </select>
+          </div>
         </div>
-
-        <div class="form-row">
-          <label for="clearance-type">Clearance Type</label>
-          <select id="clearance-type" required>
-            <option value="" disabled selected>Select Type</option>
-            <option>Resignation</option>
-            <option>Retirement</option>
-          </select>
-        </div>
-
         <div class="form-actions">
           <button type="reset" class="cancel">Cancel</button>
-          <button type="submit" class="submit">Initiate Clearance</button>
+          <button type="submit">Initiate Clearance</button>
         </div>
       </form>
     </section>
@@ -344,92 +352,99 @@ button.cancel:hover {
     </section>
   </div>
 
-  <script>
-    function statusToClass(status) {
-      return status.toLowerCase().replace(/\s+/g, '-');
-    }
+  <!-- Keep your existing code unchanged above -->
+<!-- Replace only the loadEmployeeOptions() function section with this -->
+<script>
+  function statusToClass(status) {
+    return status.toLowerCase().replace(/\s+/g, '-');
+  }
 
-    function loadEmployeeOptions() {
-      const sel = document.getElementById("employee");
-      sel.innerHTML = '<option value="" disabled selected>Select Employee</option>';
-      (JSON.parse(localStorage.getItem("personnelList"))||[])
-        .forEach(p => {
-          const o = document.createElement("option");
-          o.value = p.fullName;
-          o.textContent = p.fullName;
-          sel.appendChild(o);
-        });
-    }
+  function loadEmployeeOptions() {
+    const sel = document.getElementById("employee");
+    sel.innerHTML = '<option value="" disabled selected>Select Employee</option>';
+    const personnelList = JSON.parse(localStorage.getItem("personnelList")) || [];
 
-    function loadClearanceRequests() {
-      const tbody = document.getElementById('clearance-table-body');
-      tbody.innerHTML = '';
-      (JSON.parse(localStorage.getItem('clearanceRequests'))||[])
-        .forEach((r, i) => {
-          const cls = statusToClass(r.status);
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${r.date}</td>
-            <td>${r.employee}</td>
-            <td>${r.type}</td>
-            <td><span class="status ${cls}">${r.status}</span></td>
-            <td>
-              <button onclick="viewRequest(${i})">View</button>
-              ${r.status==='Pending'?`
-                <button onclick="updateStatus(${i},'Completed')">Approve</button>
-                <button onclick="updateStatus(${i},'Rejected')">Reject</button>`:''}
-            </td>`;
-          tbody.appendChild(tr);
-        });
-    }
-
-    function updateStatus(i,s) {
-      const arr = JSON.parse(localStorage.getItem('clearanceRequests'))||[];
-      arr[i].status = s;
-      localStorage.setItem('clearanceRequests',JSON.stringify(arr));
-      loadClearanceRequests();
-    }
-
-    function viewRequest(i) {
-      const arr = JSON.parse(localStorage.getItem('clearanceRequests'))||[];
-      const r = arr[i];
-      alert(`Request for ${r.employee}:\nType: ${r.type}\nStatus: ${r.status}`);
-    }
-
-    document.getElementById('clearance-form').addEventListener('submit', e => {
-      e.preventDefault();
-      const emp  = document.getElementById('employee').value;
-      const typ  = document.getElementById('clearance-type').value;
-      const reqs = JSON.parse(localStorage.getItem('clearanceRequests'))||[];
-      reqs.unshift({
-        date: new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),
-        employee: emp,
-        type: typ,
-        status: 'Pending'
-      });
-      localStorage.setItem('clearanceRequests',JSON.stringify(reqs));
-      e.target.reset();
-      loadClearanceRequests();
+    personnelList.forEach(p => {
+      const fullName = `${p.firstName || ""} ${p.middleName || ""} ${p.lastName || ""}`.replace(/\s+/g, ' ').trim();
+      const o = document.createElement("option");
+      o.value = fullName;
+      o.textContent = fullName;
+      sel.appendChild(o);
     });
+  }
 
-    window.onload = () => {
-      loadEmployeeOptions();
-      loadClearanceRequests();
-    };
-  </script>
-  <script>
-    function toggleMenu(element) {
-      const dropdown = element.nextElementSibling;
-      const arrow = element.querySelector("span");
-      if (dropdown.style.display === "block") {
-        dropdown.style.display = "none";
-        arrow.textContent = "▼";
-      } else {
-        dropdown.style.display = "block";
-        arrow.textContent = "▲";
-      }
+  function loadClearanceRequests() {
+    const tbody = document.getElementById('clearance-table-body');
+    tbody.innerHTML = '';
+    (JSON.parse(localStorage.getItem('clearanceRequests'))||[]).forEach((r, i) => {
+      const cls = statusToClass(r.status);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${r.date}</td>
+        <td>${r.employee}</td>
+        <td>${r.type}</td>
+        <td><span class="status ${cls}">${r.status}</span></td>
+        <td>
+          <button onclick="viewRequest(${i})">View</button>
+          ${r.status === 'Pending' ? `
+            <button onclick="updateStatus(${i},'Completed')">Approve</button>
+            <button onclick="updateStatus(${i},'Rejected')">Reject</button>
+          ` : ''}
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function updateStatus(i,s) {
+    const arr = JSON.parse(localStorage.getItem('clearanceRequests'))||[];
+    arr[i].status = s;
+    localStorage.setItem('clearanceRequests', JSON.stringify(arr));
+    loadClearanceRequests();
+  }
+
+  function viewRequest(i) {
+    const arr = JSON.parse(localStorage.getItem('clearanceRequests'))||[];
+    const r = arr[i];
+    alert(`Request for ${r.employee}:\nType: ${r.type}\nStatus: ${r.status}`);
+  }
+
+  document.getElementById('clearance-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const emp  = document.getElementById('employee').value;
+    const typ  = document.getElementById('clearance-type').value;
+    const reqs = JSON.parse(localStorage.getItem('clearanceRequests')) || [];
+    reqs.unshift({
+      date: new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),
+      employee: emp,
+      type: typ,
+      status: 'Pending'
+    });
+    localStorage.setItem('clearanceRequests', JSON.stringify(reqs));
+    e.target.reset();
+    loadClearanceRequests();
+  });
+
+  window.onload = () => {
+    loadEmployeeOptions();
+    loadClearanceRequests();
+  };
+</script>
+
+<!-- Your existing toggleMenu dropdown script remains the same -->
+<script>
+  function toggleMenu(element) {
+    const dropdown = element.nextElementSibling;
+    const arrow = element.querySelector("span");
+    if (dropdown.style.display === "block") {
+      dropdown.style.display = "none";
+      arrow.textContent = "▼";
+    } else {
+      dropdown.style.display = "block";
+      arrow.textContent = "▲";
     }
-  </script>
+  }
+</script>
+
 
 
 </body>

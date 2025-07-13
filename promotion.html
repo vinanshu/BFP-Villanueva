@@ -39,8 +39,6 @@
       display: block;
     }
 
-
-
     .sidebar {
       width: 220px;
       position: fixed;
@@ -86,7 +84,7 @@
       color: #333;
     }
 
-    input[type="text"], button {
+    input[type="text"], button, select {
       padding: 8px 12px;
       margin: 10px 5px 20px 0;
       border: 1px solid #ccc;
@@ -152,46 +150,33 @@
   </style>
 </head>
 <body>
-
   <div class="sidebar">
     <h2>Admin</h2>
     <a href="admin.html" style="display: flex; align-items: center; margin-bottom: 20px;">
-      <img src="logo-bfp.jpg" alt="Logo"
-        style="height: 30px; width: 30px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
+      <img src="logo-bfp.jpg" alt="Logo" style="height: 30px; width: 30px; object-fit: cover; border-radius: 50%; margin-right: 10px;">
       <span style="color: #FFD700; font-weight: bold;">Villanueva FireStation</span>
     </a>
-
     <a href="/leaveManagement.html">📝 Leave Management</a>
     <a href="/inventoryControl.html">📦 Inventory Control</a>
     <a href="/clearanceSystem.html">✅ Clearance System</a>
     <a href="/personnelRegister.html">👥 Personnel Register</a>
-
-    <!-- Sidebar Dropdowns -->
-    <div class="dropdown-section" >
-      <div class="dropdown-toggle" onclick="toggleMenu(this) " >
-        👥 Personnel Records  <span>▼</span>
-      </div>
+    <div class="dropdown-section">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">👥 Personnel Records <span>▼</span></div>
       <div class="dropdown-content">
-        <a href="/personnelProfile.html" >📁 Personnel Profile (201 Files)</a>
-        <a href="leaveRecords.html" >📑 Leave Records</a>
-        <a href="/ClearanceRecords.html" >📋 Clearance Records</a>
+        <a href="/personnelProfile.html">📁 Personnel Profile (201 Files)</a>
+        <a href="leaveRecords.html">📑 Leave Records</a>
+        <a href="/ClearanceRecords.html">📋 Clearance Records</a>
       </div>
     </div>
-
     <div class="dropdown-section">
-      <div class="dropdown-toggle" onclick="toggleMenu(this)">
-        ❤️ Morale & Welfare <span>▼</span>
-      </div>
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">❤️ Morale & Welfare <span>▼</span></div>
       <div class="dropdown-content">
-        <a href="/medicalRecords.html" >🩺 Medical Records of Employees</a>
+        <a href="/medicalRecords.html">🩺 Medical Records of Employees</a>
         <a href="/awardsCommendations.html">🏅 Awards & Commendations</a>
       </div>
     </div>
-
     <div class="dropdown-section" style="background-color: green; border-radius: 20px;">
-      <div class="dropdown-toggle" onclick="toggleMenu(this)">
-        👨‍💼 HR Management <span>▼</span>
-      </div>
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">👨‍💼 HR Management <span>▼</span></div>
       <div class="dropdown-content">
         <a href="/promotion.html" class="active">📈 Qualified for Promotion</a>
         <a href="/recruitment.html">👥 Recruited Personnel</a>
@@ -199,11 +184,8 @@
         <a href="/placement.html">📍 Placement (≥ 2 Years)</a>
       </div>
     </div>
-    <!-- Operation Dropdown -->
     <div class="dropdown-section">
-      <div class="dropdown-toggle" onclick="toggleMenu(this)">
-        🚒 Operation <span>▼</span>
-      </div>
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">🚒 Operation <span>▼</span></div>
       <div class="dropdown-content">
         <a href="/commel.html">📡 Commel</a>
         <a href="/intelligence.html">🕵️ Intelligence and Investigation</a>
@@ -212,23 +194,20 @@
         <a href="/fireEngine.html">🚒 Fire Engine Company</a>
       </div>
     </div>
-
     <a href="/index.html">🚪 Logout</a>
   </div>
-
   <div class="main-content">
     <h1>Promotion Eligibility</h1>
-
     <p><strong>Total Qualified for Promotion:</strong> <span id="qualifiedCount">0</span></p>
-
     <input type="text" id="searchInput" placeholder="Search personnel..." />
     <button onclick="viewAll()">View All</button>
-
     <table id="promotion-table">
       <thead>
         <tr>
           <th>Photo</th>
-          <th>Employee</th>
+          <th>First Name</th>
+          <th>Middle Name</th>
+          <th>Last Name</th>
           <th>Last Rank</th>
           <th>Current Rank</th>
           <th>Years in Rank</th>
@@ -237,12 +216,9 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Dynamic rows -->
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
-
   <script>
     function calculateYears(dateString) {
       if (!dateString) return 0;
@@ -261,7 +237,9 @@
       let qualifiedCount = 0;
 
       personnel.forEach((person, index) => {
-        const fullName = person.fullName || "N/A";
+        const firstName = person.firstName || '';
+        const middleName = person.middleName || '';
+        const lastName = person.lastName || '';
         const rank = person.rank || "N/A";
         const lastRank = person.lastRank || "—";
         const photo = person.photo || "https://via.placeholder.com/50";
@@ -271,26 +249,34 @@
         const yearsInRank = calculateYears(lastPromoted);
         const eligible = yearsInRank >= 2;
 
-        if (filter && !fullName.toLowerCase().includes(filter.toLowerCase())) return;
+        const fullName = `${firstName} ${middleName} ${lastName}`.toLowerCase();
+        if (filter && !fullName.includes(filter.toLowerCase())) return;
 
         if (eligible) qualifiedCount++;
 
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td><img src="${photo}" class="profile-photo" alt="${fullName}" /></td>
-          <td>${fullName}</td>
+          <td><img src="${photo}" class="profile-photo" alt="${firstName} ${lastName}" /></td>
+          <td>${firstName}</td>
+          <td>${middleName}</td>
+          <td>${lastName}</td>
           <td>${lastRank}</td>
           <td>${rank}</td>
           <td>${yearsInRank}</td>
           <td>
-            ${eligible ? `<input type="text" class="rank-input" value="${rank}" id="next-rank-${index}" />` : '—'}
+            ${eligible ? `
+              <select class="rank-input" id="next-rank-${index}">
+                <option value="FO1">FO1</option>
+                <option value="FO2">FO2</option>
+                <option value="FO3">FO3</option>
+                <option value="SFO1">SFO1</option>
+                <option value="SFO2">SFO2</option>
+                <option value="SFO3">SFO3</option>
+                <option value="SFO4">SFO4</option>
+              </select>` : '—'}
           </td>
-          <td class="${eligible ? 'eligible' : 'not-eligible'}">
-            ${eligible ? "Promote" : "Not"}
-          </td>
-          <td>
-            ${eligible ? `<button class="update-btn" onclick="promote(${index})">Change</button>` : '—'}
-          </td>
+          <td class="${eligible ? 'eligible' : 'not-eligible'}">${eligible ? "Promote" : "Not"}</td>
+          <td>${eligible ? `<button class="update-btn" onclick="promote(${index})">Change</button>` : '—'}</td>
         `;
         tbody.appendChild(row);
       });
@@ -304,7 +290,7 @@
       const newRank = newRankInput ? newRankInput.value.trim() : "";
 
       if (!newRank) {
-        alert("Please enter a valid rank.");
+        alert("Please select a valid rank.");
         return;
       }
 
@@ -332,8 +318,7 @@
       document.getElementById("searchInput").value = '';
       loadPromotionTable();
     };
-  </script>
-   <script>
+
     function toggleMenu(element) {
       const dropdown = element.nextElementSibling;
       const arrow = element.querySelector("span");
@@ -346,6 +331,5 @@
       }
     }
   </script>
-
 </body>
 </html>

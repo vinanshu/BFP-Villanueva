@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Inventory Control</title>
-  <link rel="stylesheet" href="/inspector/css/inspector.css" />
   <style>
     body {
       margin: 0;
@@ -62,6 +61,44 @@
       margin-bottom: 20px;
     }
 
+    .equipment-form {
+      background: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 900px;
+    }
+
+    .equipment-form h3 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -112,38 +149,9 @@
       margin-top: 10px;
       font-weight: bold;
     }
-
-    #edit-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.4);
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-    #edit-modal .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 6px;
-      width: 320px;
-    }
-    #edit-modal label {
-      font-weight: bold;
-    }
-    #edit-modal select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 8px;
-    }
-    .modal-actions {
-      text-align: right;
-      margin-top: 15px;
-    }
   </style>
 </head>
 <body>
-
   <div class="sidebar">
     <h2>Inspector</h2>
     <a href="inspector.html">📊 Dashboard</a>
@@ -157,6 +165,51 @@
     <div class="section-header">
       <h2>Equipment Inventory</h2>
     </div>
+
+    <section class="equipment-form">
+      <h3>Add Equipment</h3>
+      <form id="equipment-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="equipment-name">Equipment Name</label>
+            <input type="text" id="equipment-name" placeholder="Enter equipment name" required>
+          </div>
+          <div class="form-group">
+            <label for="item-code">Item Code</label>
+            <input type="text" id="item-code" placeholder="Enter item code/barcode" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <input type="text" id="category" placeholder="Enter category" required>
+          </div>
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" required>
+              <option value="Operational">Operational</option>
+              <option value="Needs Maintenance">Needs Maintenance</option>
+              <option value="Damaged">Damaged</option>
+              <option value="Missing">Missing</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="assigned-to">Assigned To</label>
+            <input type="text" id="assigned-to" placeholder="Username of assigned personnel" required>
+          </div>
+          <div class="form-group">
+            <label for="purchase-date">Purchase Date</label>
+            <input type="date" id="purchase-date">
+          </div>
+        </div>
+
+        <button type="submit" class="btn add-new">➕ Add Equipment</button>
+      </form>
+    </section>
 
     <table>
       <thead>
@@ -183,176 +236,5 @@
 
     <button class="btn scan" id="scan-equipment-btn" style="margin-top:20px;">Scan Equipment</button>
   </div>
-
-  <!-- Edit Modal -->
-  <div id="edit-modal">
-    <div class="modal-content">
-      <h3>Edit Equipment Status</h3>
-      <form id="edit-form">
-        <input type="hidden" id="edit-item-code" />
-        <label>Status:</label>
-        <select id="edit-status" required>
-          <option value="Needs Maintenance">Needs Maintenance</option>
-          <option value="Damaged">Damaged</option>
-          <option value="Missing">Missing</option>
-        </select>
-        <div class="modal-actions">
-          <button type="button" class="btn" style="background:#7f8c8d; color:white;" onclick="closeEditModal()">Cancel</button>
-          <button type="submit" class="btn" style="background:#27ae60; color:white;">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    function loadInventoryForInspector() {
-      const tbody = document.querySelector("tbody");
-      tbody.innerHTML = "";
-
-      const inventory = JSON.parse(localStorage.getItem("inventory")) || [];
-
-      inventory.forEach(item => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${item.itemCode}</td>
-          <td>${item.name}</td>
-          <td>${item.category}</td>
-          <td>${item.assignedTo}</td>
-          <td>${item.status}</td>
-          <td>${item.lastChecked || "N/A"}</td>
-          <td>
-            <button class="btn edit" data-code="${item.itemCode}">Edit</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      // Attach edit button listeners after DOM is updated
-      document.querySelectorAll(".btn.edit").forEach(button => {
-        button.addEventListener("click", () => {
-          const code = button.getAttribute("data-code");
-          openEditModal(code);
-        });
-      });
-    }
-
-    function openEditModal(itemCode) {
-      const inventory = JSON.parse(localStorage.getItem("inventory")) || [];
-      const item = inventory.find(i => i.itemCode === itemCode);
-      if (!item) return;
-
-      document.getElementById("edit-item-code").value = item.itemCode;
-      document.getElementById("edit-status").value = item.status;
-      document.getElementById("edit-modal").style.display = "flex";
-    }
-
-    function closeEditModal() {
-      document.getElementById("edit-modal").style.display = "none";
-    }
-
-    function startScanner() {
-      resultDiv.textContent = "";
-      errorDiv.textContent = "";
-      scannerSection.style.display = "block";
-
-      if (!("BarcodeDetector" in window)) {
-        errorDiv.textContent = "Barcode Detection API not supported.";
-        return;
-      }
-
-      barcodeDetector = new BarcodeDetector({ formats: ['code_128', 'ean_13', 'qr_code'] });
-
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then(s => {
-          stream = s;
-          video.srcObject = stream;
-          requestAnimationFrame(detectBarcode);
-        })
-        .catch(err => {
-          errorDiv.textContent = "Camera error: " + err.message;
-        });
-    }
-
-    function stopScanner() {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-      }
-      scannerSection.style.display = "none";
-    }
-
-    async function detectBarcode() {
-      if (!barcodeDetector) return;
-
-      try {
-        const barcodes = await barcodeDetector.detect(video);
-        if (barcodes.length > 0) {
-          const barcode = barcodes[0].rawValue;
-          stopScanner();
-
-          const inventory = JSON.parse(localStorage.getItem("inventory")) || [];
-          const matched = inventory.find(item => item.itemCode === barcode);
-
-          if (matched) {
-            resultDiv.innerHTML = `
-              <strong>Scanned Code:</strong> ${barcode}<br>
-              <strong>Name:</strong> ${matched.name}<br>
-              <strong>Category:</strong> ${matched.category}<br>
-              <strong>Assigned To:</strong> ${matched.assignedTo}<br>
-              <strong>Status:</strong> <span style="color: ${
-                matched.status === "Operational" ? "green" :
-                matched.status === "Needs Maintenance" ? "orange" :
-                matched.status === "Damaged" ? "red" : "gray"
-              }">${matched.status}</span><br>
-              <strong>Last Checked:</strong> ${matched.lastChecked || "N/A"}
-            `;
-          } else {
-            resultDiv.innerHTML = `<strong>Scanned Code: ${barcode}</strong><br><span style="color:red;">No matching item found.</span>`;
-          }
-
-          return;
-        }
-      } catch (err) {
-        errorDiv.textContent = "Detection error: " + err.message;
-      }
-
-      requestAnimationFrame(detectBarcode);
-    }
-
-    // Run after DOM is loaded
-    document.addEventListener("DOMContentLoaded", () => {
-      loadInventoryForInspector();
-
-      document.getElementById("edit-form").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const itemCode = document.getElementById("edit-item-code").value;
-        const newStatus = document.getElementById("edit-status").value;
-
-        let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
-        const index = inventory.findIndex(i => i.itemCode === itemCode);
-        if (index !== -1) {
-          inventory[index].status = newStatus;
-          inventory[index].lastChecked = new Date().toLocaleDateString();
-          localStorage.setItem("inventory", JSON.stringify(inventory));
-          loadInventoryForInspector();
-          closeEditModal();
-        }
-      });
-
-      document.getElementById("scan-equipment-btn").addEventListener("click", startScanner);
-      document.getElementById("close-scanner").addEventListener("click", stopScanner);
-    });
-
-    // Barcode scanner references
-    const scanBtn = document.getElementById("scan-equipment-btn");
-    const scannerSection = document.getElementById("barcode-scanner-section");
-    const video = document.getElementById("scanner-video");
-    const resultDiv = document.getElementById("barcode-result");
-    const errorDiv = document.getElementById("scanner-error");
-    const closeBtn = document.getElementById("close-scanner");
-
-    let stream = null;
-    let barcodeDetector = null;
-  </script>
 </body>
 </html>

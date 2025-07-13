@@ -42,7 +42,6 @@
       display: block;
     }
 
-
     .sidebar {
       width: 240px;
       position: fixed;
@@ -79,10 +78,14 @@
     }
 
     .main-content {
-      margin-left: 240px;
-      padding: 40px 20px;
-      width: 100%;
-    }
+  margin-left: 300px;
+  padding: 40px 20px;
+  width: calc(100% - 240px);
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
 
     h1 {
       text-align: center;
@@ -183,7 +186,6 @@
 
 <body>
 
-  <!-- Sidebar -->
   <div class="sidebar">
     <h2>Admin</h2>
     <a href="admin.html" style="display: flex; align-items: center; margin-bottom: 20px;">
@@ -197,9 +199,8 @@
     <a href="/clearanceSystem.html">✅ Clearance System</a>
     <a href="/personnelRegister.html">👥 Personnel Register</a>
 
-    <!-- Sidebar Dropdowns -->
     <div class="dropdown-section" style="background-color: green; border-radius: 20px;">
-      <div class="dropdown-toggle" onclick="toggleMenu(this) ">
+      <div class="dropdown-toggle" onclick="toggleMenu(this)">
         👥 Personnel Records <span>▼</span>
       </div>
       <div class="dropdown-content">
@@ -231,7 +232,6 @@
       </div>
     </div>
 
-    <!-- Operation Dropdown -->
     <div class="dropdown-section">
       <div class="dropdown-toggle" onclick="toggleMenu(this)">
         🚒 Operation <span>▼</span>
@@ -248,15 +248,16 @@
     <a href="/index.html">🚪 Logout</a>
   </div>
 
-  <!-- Main Content -->
   <div class="main-content">
     <h1>📁 Personnel Profile (201 Files)</h1>
     <table id="personnelTable">
       <thead>
         <tr>
           <th>Photo</th>
-          <th>Full Name</th>
-          <th>ID Number</th>
+          <th>First Name</th>
+          <th>Middle Name</th>
+          <th>Last Name</th>
+          <th>Badge Number</th>
           <th>Rank</th>
           <th>Designation</th>
           <th>Station</th>
@@ -270,7 +271,7 @@
     </table>
   </div>
 
-  <script>
+ <script>
     const personnelList = JSON.parse(localStorage.getItem('personnelList')) || [];
     const pendingUploads = {};
 
@@ -283,8 +284,10 @@
 
         row.innerHTML = `
           <td><img src="${p.photo || 'https://via.placeholder.com/60'}" /></td>
-          <td><input type="text" value="${p.fullName}" data-field="fullName" data-index="${index}" disabled></td>
-          <td><input type="text" value="${p.idNumber}" data-field="idNumber" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.firstName || ''}" data-field="firstName" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.middleName || ''}" data-field="middleName" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.lastName || ''}" data-field="lastName" data-index="${index}" disabled></td>
+          <td><input type="text" value="${p.badgeNumber || ''}" data-field="badgeNumber" data-index="${index}" disabled></td>
           <td><input type="text" value="${p.rank}" data-field="rank" data-index="${index}" disabled></td>
           <td><input type="text" value="${p.designation}" data-field="designation" data-index="${index}" disabled></td>
           <td><input type="text" value="${p.station}" data-field="station" data-index="${index}" disabled></td>
@@ -363,7 +366,8 @@
           const doc = {
             name: item.file.name,
             content: e.target.result,
-            category: item.category
+            category: item.category,
+            timestamp: new Date().toISOString()
           };
           if (!personnelList[index].documents) {
             personnelList[index].documents = [];
@@ -390,6 +394,7 @@
       return documents.map((d, docIndex) => `
         <div>
           📎 <strong>[${d.category}]</strong> <a href="${d.content}" download="${d.name}" target="_blank">${d.name}</a>
+          <small style="color: gray;"> (${new Date(d.timestamp).toLocaleString() || 'N/A'})</small>
           <button class="remove-btn" onclick="removeDocument(${index}, ${docIndex})">❌</button>
         </div>
       `).join('');
@@ -403,9 +408,6 @@
       }
     }
 
-    renderTable();
-  </script>
-  <script>
     function toggleMenu(element) {
       const dropdown = element.nextElementSibling;
       const arrow = element.querySelector("span");
@@ -417,9 +419,9 @@
         arrow.textContent = "▲";
       }
     }
+
+    renderTable();
   </script>
-
-
 </body>
 
 </html>

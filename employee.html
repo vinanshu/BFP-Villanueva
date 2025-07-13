@@ -1,12 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Employee Profile - Bureau of Fire Protection</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <title>ML Profile - Bureau of Fire Protection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
   <style>
-    /* Reset and base */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -14,115 +12,88 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f5f7fa;
-      color: #2c3e50;
+      font-family: 'Orbitron', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: row;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      background-color: #000;
+      color: #fff;
     }
 
-    /* Sidebar styles */
     .sidebar {
       position: fixed;
       left: 0;
       top: 0;
       bottom: 0;
       width: 240px;
-      background: linear-gradient(135deg, #1c2833, #2e4053);
+      background: linear-gradient(135deg, #0d1a2f, #1c2b4b);
       padding: 40px 20px;
       display: flex;
       flex-direction: column;
       gap: 25px;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+      box-shadow: 2px 0 8px rgba(0,0,0,0.5);
       z-index: 100;
-      transition: background-color 0.3s ease;
     }
 
     .sidebar h2 {
-      color: #f39c12;
-      font-weight: 700;
-      font-size: 28px;
-      letter-spacing: 1.2px;
+      color: #00bfff;
+      font-size: 24px;
+      text-align: center;
       margin-bottom: 30px;
-      user-select: none;
     }
 
     .sidebar a {
       text-decoration: none;
-      color: #ecf0f1;
-      font-weight: 600;
-      font-size: 18px;
-      padding: 14px 20px;
+      color: #fff;
+      font-size: 16px;
+      padding: 12px;
       border-radius: 8px;
-      transition: background-color 0.3s ease, color 0.3s ease, transform 0.15s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      user-select: none;
-      box-shadow: inset 0 0 0 0 #f39c12;
+      transition: 0.3s;
+      background-color: transparent;
     }
 
-    .sidebar a:hover {
-      background-color: #f39c12;
-      color: #1c2833;
-      box-shadow: 0 0 10px #f39c12cc;
-      transform: scale(1.05);
-    }
-
+    .sidebar a:hover,
     .sidebar a.active {
-      background-color: #f39c12;
-      color: #1c2833;
-      box-shadow: 0 0 15px #f39c12cc;
-      pointer-events: none;
-      cursor: default;
-      transform: scale(1.05);
+      background-color: #00bfff;
+      color: #000;
+      font-weight: bold;
     }
 
-    /* Main content */
     .main-content {
       margin-left: 240px;
-      padding: 40px 50px;
+      padding: 0;
       flex: 1;
-      max-width: 1500px;
-      min-height: 100vh;
-      background: #fff;
-      box-shadow: 0 0 15px rgba(0,0,0,0.05);
-      border-radius: 12px;
-      margin-top: 40px;
-      margin-bottom: 40px;
       display: flex;
       flex-direction: column;
-      user-select: text;
+      background: url('/assets/img/ml-bg.jpg') center center / cover no-repeat;
+      min-height: 100vh;
+      color: #fff;
+      position: relative;
     }
 
-    .main-content h1 {
-      font-weight: 700;
-      color: #34495e;
-      font-size: 2.8rem;
-      margin-bottom: 30px;
-      letter-spacing: 0.04em;
-      user-select: none;
+    .game-bar {
+      width: 100%;
+      background: rgba(0,0,0,0.75);
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      border-bottom: 3px solid #00bfff;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px #00bfff;
     }
 
-    /* Profile Card */
     .profile-card {
+      margin: 40px auto;
+      max-width: 900px;
+      background-color: rgba(0,0,0,0.65);
+      border-radius: 20px;
+      padding: 30px;
       display: flex;
       gap: 30px;
       align-items: center;
-      background: #fefefe;
-      border-radius: 12px;
-      padding: 30px 35px;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.07);
-      margin-bottom: 40px;
       flex-wrap: wrap;
-      transition: box-shadow 0.3s ease;
-    }
-
-    .profile-card:hover {
-      box-shadow: 0 6px 25px rgba(243, 156, 18, 0.25);
+      box-shadow: 0 0 15px #00bfff;
     }
 
     .profile-photo {
@@ -130,157 +101,184 @@
       height: 180px;
       border-radius: 50%;
       object-fit: cover;
-      border: 4px solid #f39c12;
-      background-color: #ddd;
-      user-select: none;
-      flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(243, 156, 18, 0.6);
-      transition: transform 0.3s ease;
-    }
-
-    .profile-photo:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 15px rgba(243, 156, 18, 0.9);
+      border: 4px solid #00bfff;
+      background-color: #222;
+      box-shadow: 0 0 10px #00bfff;
     }
 
     .profile-info {
       flex: 1;
-      min-width: 280px;
-      line-height: 1.6;
-      color: #4b5d6a;
     }
 
     .profile-info h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #2c3e50;
+      font-size: 1.8rem;
       margin-bottom: 15px;
-      letter-spacing: 0.04em;
-      user-select: text;
-      word-break: break-word;
+      color: #00d8ff;
     }
 
     .profile-info p {
-      font-size: 1.05rem;
-      margin-bottom: 10px;
-      color: #555;
-      line-height: 1.5;
-      user-select: text;
-      word-wrap: break-word;
+      margin: 5px 0;
+      color: #e0f7ff;
     }
 
     .profile-info p strong {
-      color: #34495e;
-      user-select: text;
+      color: #00bfff;
     }
 
-    /* Download Buttons container */
+    .lists-wrapper {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 20px auto;
+      max-width: 960px;
+    }
+
+    .equipment-list, .clearance-list {
+      flex: 1 1 420px;
+    }
+
+    .equipment-list table, .clearance-list table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: rgba(0,0,0,0.65);
+      color: #fff;
+      box-shadow: 0 0 10px #00bfff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .equipment-list th, .equipment-list td,
+    .clearance-list th, .clearance-list td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    .equipment-list thead tr,
+    .clearance-list thead tr {
+      background-color: #00bfff;
+      color: #000;
+    }
+
+    .equipment-list tbody tr:nth-child(even),
+    .clearance-list tbody tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
     .download-buttons {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      user-select: none;
       justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
     }
 
     .download-buttons button {
-      background: #f39c12;
+      background: #00bfff;
+      color: #000;
+      font-weight: bold;
+      padding: 12px 24px;
       border: none;
-      color: #fff;
-      font-weight: 600;
-      font-size: 1.1rem;
-      padding: 14px 28px;
       border-radius: 10px;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(243, 156, 18, 0.5);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
-      flex: 1 1 220px;
-      max-width: 300px;
-      text-align: center;
-      user-select: none;
+      font-size: 1rem;
+      box-shadow: 0 0 10px #00bfff;
+      transition: 0.3s;
     }
 
-    .download-buttons button:hover,
-    .download-buttons button:focus {
-      background-color: #d68910;
-      box-shadow: 0 6px 20px rgba(214, 137, 16, 0.8);
-      outline: none;
+    .download-buttons button:hover {
+      background: #00a3cc;
+      box-shadow: 0 0 20px #00d8ff;
       transform: scale(1.05);
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       body {
         flex-direction: column;
       }
+
       .sidebar {
-        position: relative;
         width: 100%;
         height: auto;
-        padding: 20px 15px;
         flex-direction: row;
-        gap: 15px;
-        overflow-x: auto;
-        white-space: nowrap;
+        padding: 10px;
+        justify-content: space-around;
       }
-      .sidebar h2 {
-        font-size: 20px;
-        margin-bottom: 0;
-        flex: 0 0 auto;
-      }
-      .sidebar a {
-        font-size: 16px;
-        padding: 10px 14px;
-        flex: 0 0 auto;
-        border-radius: 6px;
-      }
+
       .main-content {
         margin-left: 0;
-        padding: 25px 20px;
-        border-radius: 0;
-        margin-top: 15px;
-        margin-bottom: 30px;
-        max-width: 100%;
       }
+
       .profile-card {
         flex-direction: column;
-        align-items: center;
         text-align: center;
       }
-      .profile-info {
-        min-width: unset;
+
+      .lists-wrapper {
+        flex-direction: column;
+        align-items: center;
       }
+
       .download-buttons {
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
       }
     }
   </style>
 </head>
 <body>
-
-  <!-- Sidebar -->
-  <nav class="sidebar" role="navigation" aria-label="Employee Navigation">
-    <h2>BFP Employee</h2>
-    <a href="/employee.html" class="active" aria-current="page" tabindex="0">👤 Profile</a>
-    <a href="/employeeDashboard.html" tabindex="0">📊 Dashboard</a>
-    <a href="/employeeRequest.html" tabindex="0">📝 Request Leave</a>
-    <a href="/index.html" tabindex="0">🚪 Logout</a>
+  <nav class="sidebar">
+    <h2>🔥 BFP </h2>
+    <a href="/employee.html" class="active">👤 Profile</a>
+    <a href="/employeeDashboard.html">📊 Dashboard</a>
+    <a href="/employeeRequest.html">📝 Leave</a>
+    <a href="/index.html">🚪 Logout</a>
   </nav>
 
-  <!-- Main Content -->
-  <main class="main-content" role="main" tabindex="-1">
-    <h1>Employee Profile</h1>
-    <section class="profile-card" id="profile-card" aria-label="Employee profile card">
+  <main class="main-content">
+    <div class="game-bar">EMPLOYEE PROFILE</div>
+
+    <section class="profile-card" id="profile-card">
       <img src="" alt="Employee Photo" class="profile-photo" id="profile-photo" />
       <div class="profile-info" id="profile-info">
         <h2>Loading...</h2>
       </div>
     </section>
 
-    <!-- Download Buttons -->
+    <div class="lists-wrapper">
+      <section class="equipment-list" id="equipment-list">
+        <h2 style="text-align: center; color: #00bfff; margin-bottom: 15px;">Assigned Equipment</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Equipment Name</th>
+              <th>Barcode/Item Code</th>
+              <th>Category</th>
+              <th>Purchase Date</th>
+            </tr>
+          </thead>
+          <tbody id="equipment-body"></tbody>
+        </table>
+      </section>
+
+      <section class="clearance-list" id="clearance-list">
+        <h2 style="text-align: center; color: #00bfff; margin-bottom: 15px;">Clearance Requests</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="clearance-body"></tbody>
+        </table>
+      </section>
+    </div>
+
     <div class="download-buttons">
-      <button id="downloadLeaveForm" type="button" aria-label="Download Leave Form" tabindex="0">Download Leave Form</button>
-      <button id="downloadClearance" type="button" aria-label="Download Clearance Form" tabindex="0">Download Clearance Form</button>
+      <button id="downloadLeaveForm">📥 Download Leave Form</button>
+      <button id="downloadClearance">📥 Download Clearance</button>
     </div>
   </main>
 
@@ -288,7 +286,7 @@
     function loadEmployeeProfile() {
       const currentUser = localStorage.getItem("currentUser");
       if (!currentUser) {
-        alert("No user logged in. Redirecting to login...");
+        alert("No user logged in. Redirecting...");
         window.location.href = "/index.html";
         return;
       }
@@ -303,17 +301,15 @@
       }
 
       renderEmployeeProfile(employee);
+      loadAssignedEquipment(employee);
+      loadClearanceRequests(employee);
     }
 
     function renderEmployeeProfile(emp) {
       const photoElem = document.getElementById("profile-photo");
-      photoElem.src = emp.photo && emp.photo.startsWith("data:image")
-        ? emp.photo
-        : "/employee/img/default-profile.png";
-
-      photoElem.alt = `${emp.rank} ${emp.firstName} ${emp.lastName}'s profile photo`;
-
-      const html = `
+      photoElem.src = emp.photo && emp.photo.startsWith("data:image") ? emp.photo : "/employee/img/default-profile.png";
+      photoElem.alt = `${emp.rank} ${emp.firstName} ${emp.lastName}'s photo`;
+      document.getElementById("profile-info").innerHTML = `
         <h2>${emp.rank} ${emp.firstName} ${emp.middleName} ${emp.lastName}</h2>
         <p><strong>Badge Number:</strong> ${emp.badgeNumber}</p>
         <p><strong>Rank:</strong> ${emp.rank}</p>
@@ -321,21 +317,58 @@
         <p><strong>Station:</strong> ${emp.station}</p>
         <p><strong>Birth Date:</strong> ${emp.birthDate}</p>
         <p><strong>Date Hired:</strong> ${emp.dateHired}</p>
-        <p><strong>Username:</strong> ${emp.username}</p>
-      `;
-      document.getElementById("profile-info").innerHTML = html;
+        <p><strong>Username:</strong> ${emp.username}</p>`;
     }
 
-    // Download button handlers
+    function loadAssignedEquipment(emp) {
+      const fullName = `${emp.firstName} ${emp.middleName || ''} ${emp.lastName}`.replace(/\s+/g, ' ').trim();
+      const inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+      const assignedItems = inventory.filter(item => item.assignedTo === fullName);
+      const tbody = document.getElementById("equipment-body");
+
+      if (assignedItems.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 15px;">No equipment assigned.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = assignedItems.map(item => `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.itemCode}</td>
+          <td>${item.category}</td>
+          <td>${item.purchaseDate}</td>
+        </tr>
+      `).join('');
+    }
+
+    function loadClearanceRequests(emp) {
+      const fullName = `${emp.firstName} ${emp.middleName || ''} ${emp.lastName}`.replace(/\s+/g, ' ').trim();
+      const clearanceList = JSON.parse(localStorage.getItem("clearanceRequests")) || [];
+      const userClearances = clearanceList.filter(c => c.employee === fullName);
+      const tbody = document.getElementById("clearance-body");
+
+      if (userClearances.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 15px;">No clearance requests found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = userClearances.map(c => `
+        <tr>
+          <td>${c.date}</td>
+          <td>${c.type}</td>
+          <td>${c.status}</td>
+        </tr>
+      `).join('');
+    }
+
     document.getElementById("downloadLeaveForm").addEventListener("click", () => {
-      window.open("/employee/forms/leave-form.pdf", "_blank", "noopener");
+      window.open("/employee/forms/leave-form.pdf", "_blank");
     });
 
     document.getElementById("downloadClearance").addEventListener("click", () => {
-      window.open("/employee/forms/clearance-form.pdf", "_blank", "noopener");
+      window.open("/employee/forms/clearance-form.pdf", "_blank");
     });
 
-    // Initial load
     window.onload = loadEmployeeProfile;
   </script>
 </body>
